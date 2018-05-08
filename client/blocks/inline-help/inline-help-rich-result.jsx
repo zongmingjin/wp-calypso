@@ -82,6 +82,9 @@ class InlineHelpRichResult extends Component {
 		const { showDialog } = this.state;
 		const link = get( this.props.result, RESULT_LINK );
 		const iframeClasses = classNames( 'inline-help__richresult__dialog__video' );
+
+		console.log( 'render dialog, show?', showDialog )
+
 		return (
 			<Dialog
 				additionalClassNames="inline-help__richresult__dialog"
@@ -124,7 +127,11 @@ class InlineHelpRichResult extends Component {
 						}[ type ]
 					}
 				</Button>
-				{ type === RESULT_VIDEO && this.renderDialog() }
+				{
+					(
+						type === RESULT_VIDEO ||
+						type === RESULT_ARTICLE
+					) && this.renderDialog() }
 			</div>
 		);
 	}
