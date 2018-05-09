@@ -290,6 +290,8 @@ export class FullPostView extends React.Component {
 	render() {
 		const { post, site, feed, referralPost, referral, blogId, feedId, postId } = this.props;
 
+		console.log( 'render reader-full-post' );
+
 		if ( post.is_error ) {
 			return <ReaderFullPostUnavailable post={ post } onBackClick={ this.handleBack } />;
 		}
@@ -490,6 +492,7 @@ export class FullPostView extends React.Component {
 
 export default connect(
 	( state, ownProps ) => {
+		console.log( ownProps );
 		const { feedId, blogId, postId } = ownProps;
 		const post = getPostByKey( state, { feedId, blogId, postId } ) || { _state: 'pending' };
 

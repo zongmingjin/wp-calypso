@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
-import { get, isUndefined, omitBy } from 'lodash';
+import { get, includes, isUndefined, omitBy } from 'lodash';
 
 /**
  * Internal Dependencies
@@ -28,6 +28,8 @@ import { decodeEntities, preventWidows } from 'lib/formatting';
 import { recordTracksEvent } from 'state/analytics/actions';
 import { getSearchQuery } from 'state/inline-help/selectors';
 import { requestGuidedTour } from 'state/ui/guided-tours/actions';
+
+import ReaderFullPost from 'blocks/reader-full-post/index.jsx';
 
 class InlineHelpRichResult extends Component {
 	static propTypes = {
@@ -62,6 +64,10 @@ class InlineHelpRichResult extends Component {
 			} else {
 				this.setState( { showDialog: ! this.state.showDialog } );
 			}
+		} else if ( type === RESULT_ARTICLE ) {
+			event.preventDefault();
+			// this.getArticleContent(  )
+			this.setState( { showDialog: ! this.state.showDialog } );
 		} else {
 			if ( ! href ) {
 				return;
@@ -78,12 +84,40 @@ class InlineHelpRichResult extends Component {
 		this.setState( { showDialog: ! this.state.showDialog } );
 	};
 
-	renderDialog = () => {
+	renderArticleDialog = () => {
+		const { showDialog } = this.state;
+		// const link = get( this.props.result, RESULT_LINK );
+
+		// debugger;
+
+		console.log( {
+			showDialog,
+			result: this.props.result,
+		} )
+
+		// /read/blogs/9619154/posts/3307
+
+		return (
+			<Dialog
+				additionalClassNames="inline-help__richresult__dialog"
+				isVisible={ showDialog }
+				onCancel={ this.onCancel }
+				onClose={ this.onCancel }
+			>
+				<div>
+					<div
+						blogId={ 9619154 }
+						postId={ 3307 }
+					/>
+				</div>
+			</Dialog>
+		);
+	};
+
+	renderVideoDailog = () => {
 		const { showDialog } = this.state;
 		const link = get( this.props.result, RESULT_LINK );
 		const iframeClasses = classNames( 'inline-help__richresult__dialog__video' );
-
-		console.log( 'render dialog, show?', showDialog )
 
 		return (
 			<Dialog
@@ -114,6 +148,9 @@ class InlineHelpRichResult extends Component {
 		const description = get( result, RESULT_DESCRIPTION );
 		const link = get( result, RESULT_LINK );
 		const classes = classNames( 'inline-help__richresult__title' );
+		const isVideo = type === RESULT_VIDEO;
+		const isArticle = type === RESULT_ARTICLE;
+
 		return (
 			<div>
 				<h2 className={ classes }>{ preventWidows( decodeEntities( title ) ) }</h2>
@@ -127,11 +164,8 @@ class InlineHelpRichResult extends Component {
 						}[ type ]
 					}
 				</Button>
-				{
-					(
-						type === RESULT_VIDEO ||
-						type === RESULT_ARTICLE
-					) && this.renderDialog() }
+				{ isVideo && this.renderVideoDialog() }
+				{ isArticle && this.renderArticleDialog() }
 			</div>
 		);
 	}
