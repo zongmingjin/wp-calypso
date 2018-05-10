@@ -29,7 +29,7 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import { getSearchQuery } from 'state/inline-help/selectors';
 import { requestGuidedTour } from 'state/ui/guided-tours/actions';
 
-import ReaderFullPost from 'blocks/reader-full-post/index.jsx';
+import ReaderFullPost from 'blocks/reader-full-post/minimal.jsx';
 
 class InlineHelpRichResult extends Component {
 	static propTypes = {
@@ -93,7 +93,7 @@ class InlineHelpRichResult extends Component {
 		console.log( {
 			showDialog,
 			result: this.props.result,
-		} )
+		} );
 
 		// /read/blogs/9619154/posts/3307
 
@@ -105,10 +105,7 @@ class InlineHelpRichResult extends Component {
 				onClose={ this.onCancel }
 			>
 				<div>
-					<div
-						blogId={ 9619154 }
-						postId={ 3307 }
-					/>
+					<div blogId={ 9619154 } postId={ 3307 } />
 				</div>
 			</Dialog>
 		);
