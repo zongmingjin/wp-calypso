@@ -29,7 +29,7 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import { getSearchQuery } from 'state/inline-help/selectors';
 import { requestGuidedTour } from 'state/ui/guided-tours/actions';
 
-import ReaderFullPost from 'blocks/reader-full-post/minimal.jsx';
+import MinimalPost from 'blocks/reader-full-post/minimal.jsx';
 
 class InlineHelpRichResult extends Component {
 	static propTypes = {
@@ -40,7 +40,7 @@ class InlineHelpRichResult extends Component {
 		showDialog: false,
 	};
 
-	handleClick = event => {
+	handleActionButtonClick = event => {
 		event.preventDefault();
 		const { href } = event.target;
 		const { type } = this.props;
@@ -67,7 +67,7 @@ class InlineHelpRichResult extends Component {
 		} else if ( type === RESULT_ARTICLE ) {
 			event.preventDefault();
 			// this.getArticleContent(  )
-			this.setState( { showDialog: ! this.state.showDialog } );
+			this.setState( { showDialog: true } );
 		} else {
 			if ( ! href ) {
 				return;
@@ -81,6 +81,7 @@ class InlineHelpRichResult extends Component {
 	};
 
 	onCancel = () => {
+		console.log( 'onCancel' )
 		this.setState( { showDialog: ! this.state.showDialog } );
 	};
 
@@ -105,13 +106,13 @@ class InlineHelpRichResult extends Component {
 				onClose={ this.onCancel }
 			>
 				<div>
-					<div blogId={ 9619154 } postId={ 3307 } />
+					<MinimalPost blogId={ 9619154 } postId={ 3307 } />
 				</div>
 			</Dialog>
 		);
 	};
 
-	renderVideoDailog = () => {
+	renderVideoDialog = () => {
 		const { showDialog } = this.state;
 		const link = get( this.props.result, RESULT_LINK );
 		const iframeClasses = classNames( 'inline-help__richresult__dialog__video' );
@@ -122,6 +123,7 @@ class InlineHelpRichResult extends Component {
 				isVisible={ showDialog }
 				onCancel={ this.onCancel }
 				onClose={ this.onCancel }
+				onClick={ () => { console.log( 'clicked' ) }}
 			>
 				<div className={ iframeClasses }>
 					<ResizableIframe
@@ -141,6 +143,7 @@ class InlineHelpRichResult extends Component {
 	render() {
 		const { type } = this.props;
 		const { translate, result } = this.props;
+		const { showDialog } = this.state;
 		const title = get( result, RESULT_TITLE );
 		const description = get( result, RESULT_DESCRIPTION );
 		const link = get( result, RESULT_LINK );
@@ -148,11 +151,13 @@ class InlineHelpRichResult extends Component {
 		const isVideo = type === RESULT_VIDEO;
 		const isArticle = type === RESULT_ARTICLE;
 
+		console.log( { showDialog, isArticle } );
+
 		return (
 			<div>
 				<h2 className={ classes }>{ preventWidows( decodeEntities( title ) ) }</h2>
 				<p>{ preventWidows( decodeEntities( description ) ) }</p>
-				<Button primary onClick={ this.handleClick } href={ link }>
+				<Button primary onClick={ this.handleActionButtonClick } href={ link }>
 					{
 						{
 							article: translate( 'Read more' ),

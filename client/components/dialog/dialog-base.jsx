@@ -123,6 +123,7 @@ class DialogBase extends Component {
 	};
 
 	_close = action => {
+		console.log( '_close' );
 		if ( this.props.onDialogClose ) {
 			this.props.onDialogClose( action );
 		}
