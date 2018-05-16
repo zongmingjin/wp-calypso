@@ -177,7 +177,8 @@ class EditorDrawer extends Component {
 	renderLocation() {
 		const { translate } = this.props;
 
-		if ( ! this.props.site || this.props.isJetpack ) {
+		// @todo Add Jetpack min version check once geo-location support is released in Jetpack
+		if ( ! this.props.site ) {
 			return;
 		}
 
