@@ -14,7 +14,7 @@ import { stringify } from 'qs';
  * Internal dependencies
  */
 import EditorDrawerWell from 'post-editor/editor-drawer-well';
-import EditorLocationOptions from 'post-editor/editor-location/options';
+import { reverseGeocode } from '../../lib/geocoding';
 import { recordEvent, recordStat } from 'lib/posts/stats';
 import PostMetadata from 'lib/post-metadata';
 import EditorLocationSearch from './search';
@@ -60,22 +60,64 @@ class EditorLocation extends React.Component {
 
 	state = {
 		error: null,
+		previouslyPrivatePostBeingModified: false,
 	};
 
+	constructor( props ) {
+		super( props );
+
+		this.originalProps = props;
+	}
+
+	componentWillReceiveProps( nextProps ) {
+		if (
+			'private' === this.originalProps.isSharedPublicly &&
+			( this.originalProps.coordinates && nextProps.coordinates ) &&
+			( this.originalProps.coordinates[ 0 ] !== nextProps.coordinates[ 0 ] ||
+				this.originalProps.coordinates[ 1 ] !== nextProps.coordinates[ 1 ] )
+		) {
+			this.setState( { previouslyPrivatePostBeingModified: true } );
+		}
+	}
+
 	onGeolocateSuccess = position => {
-		this.setState( {
-			locating: false,
-		} );
+		const latitude = toGeoString( position.coords.latitude ),
+			longitude = toGeoString( position.coords.longitude );
 
 		this.props.updatePostMetadata( this.props.siteId, this.props.postId, {
-			geo_latitude: toGeoString( position.coords.latitude ),
-			geo_longitude: toGeoString( position.coords.longitude ),
-			geo_public: publicValueToMetaValue( this.props.isSharedPublicly ),
-			geo_address:
-				toGeoString( position.coords.latitude ) + ', ' + toGeoString( position.coords.longitude ),
+			geo_latitude: latitude,
+			geo_longitude: longitude,
+			geo_public: publicValueToMetaValue( 'public' ),
 		} );
 
 		recordStat( 'location_geolocate_success' );
+
+		reverseGeocode( latitude, longitude )
+			.then( results => {
+				const localityResults = results.filter( result => {
+					return -1 !== result.types.indexOf( 'locality' );
+				} );
+
+				if ( localityResults.length ) {
+					this.props.updatePostMetadata( this.props.siteId, this.props.postId, {
+						geo_address: localityResults[ 0 ].formatted_address,
+					} );
+				}
+
+				recordStat( 'location_reverse_geocode_success' );
+			} )
+			.catch( () => {
+				this.props.updatePostMetadata( this.props.siteId, this.props.postId, {
+					geo_address: latitude + ', ' + longitude,
+				} );
+
+				recordStat( 'location_reverse_geocode_failed' );
+			} )
+			.finally( () => {
+				this.setState( {
+					locating: false,
+				} );
+			} );
 	};
 
 	onGeolocateFailure = error => {
@@ -121,7 +163,7 @@ class EditorLocation extends React.Component {
 			geo_latitude: toGeoString( result.geometry.location.lat ),
 			geo_longitude: toGeoString( result.geometry.location.lng ),
 			geo_address: result.formatted_address,
-			geo_public: publicValueToMetaValue( this.props.isSharedPublicly ),
+			geo_public: publicValueToMetaValue( 'public' ),
 		} );
 	};
 
@@ -142,7 +184,17 @@ class EditorLocation extends React.Component {
 	};
 
 	render() {
-		let error, buttonText, options;
+		let error, publicNotice, buttonText;
+
+		if ( this.state.previouslyPrivatePostBeingModified ) {
+			publicNotice = (
+				<Notice status="is-warning" onDismissClick={ this.resetError } isCompact>
+					{ this.props.translate( 'Location will be displayed publicly.', {
+						context: 'Post editor geolocation',
+					} ) }
+				</Notice>
+			);
+		}
 
 		if ( this.state.error ) {
 			error = (
@@ -162,12 +214,9 @@ class EditorLocation extends React.Component {
 			} );
 		}
 
-		if ( this.props.coordinates ) {
-			options = <EditorLocationOptions />;
-		}
-
 		return (
 			<div className="editor-location">
+				{ publicNotice }
 				{ error }
 				<EditorDrawerWell
 					icon="location"
@@ -182,8 +231,8 @@ class EditorLocation extends React.Component {
 				<EditorLocationSearch
 					onError={ this.onGeolocateFailure }
 					onSelect={ this.onSearchSelect }
+					value={ this.props.label }
 				/>
-				{ options }
 			</div>
 		);
 	}
@@ -196,8 +245,9 @@ export default connect(
 		const post = getEditedPost( state, siteId, postId );
 		const coordinates = PostMetadata.geoCoordinates( post );
 		const isSharedPublicly = PostMetadata.geoIsSharedPublicly( post );
+		const label = PostMetadata.geoLabel( post );
 
-		return { siteId, postId, coordinates, isSharedPublicly };
+		return { siteId, postId, coordinates, isSharedPublicly, label };
 	},
 	{
 		updatePostMetadata,

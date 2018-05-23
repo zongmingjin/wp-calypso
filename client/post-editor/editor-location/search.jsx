@@ -21,6 +21,7 @@ export default class extends React.Component {
 	static propTypes = {
 		onError: PropTypes.func,
 		onSelect: PropTypes.func,
+		value: PropTypes.string,
 	};
 
 	static defaultProps = {
@@ -51,7 +52,7 @@ export default class extends React.Component {
 			this.hasTrackedStats = true;
 		}
 
-		if ( ! address ) {
+		if ( ! address || address === this.props.value ) {
 			this.setState( {
 				results: [],
 			} );
@@ -83,22 +84,18 @@ export default class extends React.Component {
 		} );
 	};
 
-	onSelect = result => {
-		this.refs.search.clear();
-		this.props.onSelect( result );
-	};
-
 	render() {
 		const { results, isSearching } = this.state;
 
 		return (
 			<div className="editor-location__search">
 				<SearchCard
-					ref="search"
 					onSearch={ this.geocode }
 					searching={ isSearching }
 					delaySearch
 					compact
+					value={ this.props.value }
+					initialValue={ this.props.value }
 				/>
 				<ul className="editor-location__search-results">
 					{ results.map( result => {
@@ -106,7 +103,7 @@ export default class extends React.Component {
 							<li key={ result.formatted_address }>
 								<EditorLocationSearchResult
 									result={ result }
-									onClick={ this.onSelect.bind( null, result ) }
+									onClick={ this.props.onSelect.bind( null, result ) }
 								/>
 							</li>
 						);
