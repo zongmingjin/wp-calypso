@@ -186,7 +186,7 @@ class InlineHelp extends Component {
 						) }
 					</Dialog>
 				) }
-				{ this.props.isHappychatButtonVisible &&
+				{ false && this.props.isHappychatButtonVisible &&
 					config.isEnabled( 'happychat' ) && (
 						<HappychatButton className="inline-help__happychat-button" allowMobileRedirect />
 					) }

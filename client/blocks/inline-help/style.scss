@@ -1,14 +1,19 @@
 .inline-help {
-	position: fixed;
-		right: 24px;
-		bottom: 24px;
+	// position: fixed;
+	// 	right: 24px;
+	// 	bottom: 24px;
 
 	z-index: z-index( 'root', '.floating-help' );
 
-	.button.inline-help__happychat-button {
-		position: absolute;
-		bottom: 60px;
-		right: 5px;
+}
+
+.button.inline-help__happychat-button {
+		// position: absolute;
+		// bottom: 60px;
+		// right: 5px;
+
+		z-index: z-index( 'root', '.floating-help' );
+		margin: 8px;
 
 		line-height: 0;
 		padding: 1px;
@@ -20,7 +25,7 @@
 		.gridicon {
 			fill: $white;
 			margin: 2px;
-			top: 0;
+			top: 0 !important; // forgive me father, for I have sinned!
 			height: 24px;
 			width: 24px;
 		}
@@ -35,12 +40,13 @@
 		background-color: $orange-jazzy;
 		border-color: $orange-jazzy;
 	}
-}
 
 .button.is-borderless.inline-help__button {
-	position: absolute;
-		right: 0px;
-		bottom: 0px;
+	// position: absolute;
+	// 	right: 0px;
+	// 	bottom: 0px;
+	margin: 4px;
+
 	line-height: 0;
 	padding: 1px;
 	border-radius: 100%;

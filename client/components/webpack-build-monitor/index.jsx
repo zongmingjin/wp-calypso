@@ -107,6 +107,8 @@ class WebpackBuildMonitor extends React.PureComponent {
 			return null;
 		}
 
+		console.log( 'busy...' );
+
 		return (
 			<div
 				className={ classNames( 'webpack-build-monitor', {

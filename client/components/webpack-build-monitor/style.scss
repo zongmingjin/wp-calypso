@@ -1,7 +1,8 @@
 .webpack-build-monitor {
-	position: fixed;
-	bottom: 50px;
-	right: 83px;
+	// position: fixed;
+	// bottom: 50px;
+	// right: 83px;
+	margin: 8px;
 	z-index: z-index( 'root', '.webpack-build-monitor' );
 	font-size: 9px;
 	padding: 4px 6px;
@@ -22,6 +23,8 @@
 		background: $alert-red;
 	}
 }
+
+
 
 .webpack-build-monitor__spinner {
 	margin-right: 6px;

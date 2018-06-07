@@ -29,7 +29,7 @@ class TranslatorLauncher extends React.PureComponent {
 		infoDialogVisible: false,
 		firstActivation: true,
 		isActive: translator.isActivated(),
-		isEnabled: translator.isEnabled(),
+		isEnabled: true,
 	};
 
 	componentDidMount() {
@@ -85,6 +85,8 @@ class TranslatorLauncher extends React.PureComponent {
 	render() {
 		let launcherClasses = 'community-translator';
 		let toggleString;
+
+		console.log( 'launcher' )
 
 		if ( ! this.state.isEnabled ) {
 			return null;
