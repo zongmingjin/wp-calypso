@@ -115,7 +115,9 @@ class LabelItem extends Component {
 				{ label.showDetails && (
 					<p className="shipping-label__item-tracking">
 						{ translate( 'Tracking #: {{trackingLink/}}', {
-							components: { trackingLink: <TrackingLink { ...label } /> },
+							components: {
+								trackingLink: <TrackingLink tracking={ label.tracking } carrierId={ label.carrierId } />
+							},
 						} ) }
 					</p>
 				) }
