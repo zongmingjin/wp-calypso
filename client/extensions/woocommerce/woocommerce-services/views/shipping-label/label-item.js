@@ -13,6 +13,7 @@ import { localize } from 'i18n-calypso';
  * Internal dependencies
  */
 import Button from 'components/button';
+import ClipboardButton from 'components/forms/clipboard-button';
 import RefundDialog from './label-refund-modal';
 import ReprintDialog from './label-reprint-modal';
 import DetailsDialog from './label-details-modal';
@@ -22,6 +23,7 @@ import {
 	openReprintDialog,
 	openDetailsDialog,
 } from 'woocommerce/woocommerce-services/state/shipping-label/actions';
+import { recordTracksEvent } from 'state/analytics/actions';
 
 class LabelItem extends Component {
 	renderRefund = label => {
@@ -97,6 +99,12 @@ class LabelItem extends Component {
 		);
 	};
 
+	handleOnCopyClick = () => {
+		this.props.recordTracksEvent( 'calypso_woocommerce_order_tracking_number_copy', {
+			carrier_id: this.props.label.carrierId,
+		} );
+	};
+
 	render() {
 		const { label, translate } = this.props;
 
@@ -113,13 +121,20 @@ class LabelItem extends Component {
 					{ label.showDetails && this.renderLabelDetails( label ) }
 				</p>
 				{ label.showDetails && (
-					<p className="shipping-label__item-tracking">
-						{ translate( 'Tracking #: {{trackingLink/}}', {
-							components: {
-								trackingLink: <TrackingLink tracking={ label.tracking } carrierId={ label.carrierId } />
-							},
-						} ) }
-					</p>
+					<React.Fragment>
+						<p className="shipping-label__item-tracking">
+							{ translate( 'Tracking #: {{trackingLink/}}', {
+								components: {
+									trackingLink: (
+										<TrackingLink tracking={ label.tracking } carrierId={ label.carrierId } />
+									),
+								},
+							} ) }
+						</p>
+						<ClipboardButton compact onCopy={ this.handleOnCopyClick } text={ label.tracking }>
+							{ translate( 'Copy to clipboard' ) }
+						</ClipboardButton>
+					</React.Fragment>
 				) }
 				{ label.showDetails && (
 					<p className="shipping-label__item-actions">
@@ -139,11 +154,20 @@ LabelItem.propTypes = {
 	openRefundDialog: PropTypes.func.isRequired,
 	openReprintDialog: PropTypes.func.isRequired,
 	openDetailsDialog: PropTypes.func.isRequired,
+	recordTracksEvent: PropTypes.func.isRequired,
 	translate: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => {
-	return bindActionCreators( { openRefundDialog, openReprintDialog, openDetailsDialog }, dispatch );
+	return bindActionCreators(
+		{
+			openRefundDialog,
+			openReprintDialog,
+			openDetailsDialog,
+			recordTracksEvent,
+		},
+		dispatch
+	);
 };
 
 export default connect( null, mapDispatchToProps )( localize( LabelItem ) );
