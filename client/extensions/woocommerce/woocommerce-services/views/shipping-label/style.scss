@@ -4,6 +4,59 @@
 	margin-top: 8px;
 }
 
+.dialog__action-buttons {
+	display: flex;
+}
+.wizard-progress-bar {
+	flex-grow: 1;
+	padding: 0;
+	box-shadow: none;
+	
+	.button:first-child {
+		margin: 0;
+	}
+}
+.shipping-label__packing-steps {
+	overflow: visible;
+	margin: 25px 20px 20px;
+}
+.shipping-label__packing-steps-box {
+	rect {
+		fill: none;
+		stroke: $blue-dark;
+		stroke-width: 1px;
+	}
+
+	text {
+		fill: $blue-dark;
+	}
+}
+.shipping-label__packing-steps-item {
+	rect {
+		fill: white;
+		fill-opacity: 0.85;
+		stroke: $gray-lighten-20;
+		stroke-width: 1px;
+	}
+
+	text {
+		fill: $gray-lighten-20;
+	}
+	&.current rect {
+		stroke: $blue-medium;
+	}
+	&.current text {
+		fill: $blue-medium;
+	}
+
+	&:not( .visible ) {
+		opacity: 0;
+		transform: scale( 1.2 );
+	}
+
+	transition: opacity 250ms, transform 250ms;
+}
+
 .shipping-label__item {
 	p {
 		margin-bottom: 3px;
@@ -94,6 +147,10 @@
 		}
 	}
 
+}
+
+&.dialog.card.packing-steps-modal {
+	width: 520px;
 }
 
 .error-notice {

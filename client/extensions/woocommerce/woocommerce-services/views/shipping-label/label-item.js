@@ -16,7 +16,7 @@ import EllipsisMenu from 'components/ellipsis-menu';
 import PopoverMenuItem from 'components/popover/menu-item';
 import RefundDialog from './label-refund-modal';
 import ReprintDialog from './label-reprint-modal';
-import DetailsDialog from './label-details-modal';
+import PackingStepsDialog from './packing-steps-modal';
 import TrackingLink from './tracking-link';
 import {
 	openRefundDialog,
@@ -80,8 +80,8 @@ class LabelItem extends Component {
 		};
 
 		return (
-			<PopoverMenuItem onClick={ openDialog } icon="info-outline">
-				{ translate( 'View details' ) }
+			<PopoverMenuItem onClick={ openDialog } icon="layout">
+				{ translate( 'View packing steps' ) }
 			</PopoverMenuItem>
 		);
 	};
@@ -105,7 +105,7 @@ class LabelItem extends Component {
 								{ this.renderRefund( label ) }
 								{ this.renderReprint( label ) }
 							</EllipsisMenu>
-							<DetailsDialog siteId={ siteId } orderId={ orderId } { ...label } />
+							<PackingStepsDialog siteId={ siteId } orderId={ orderId } { ...label } />
 							<RefundDialog siteId={ siteId } orderId={ orderId } { ...label } />
 							<ReprintDialog siteId={ siteId } orderId={ orderId } { ...label } />
 						</span>
