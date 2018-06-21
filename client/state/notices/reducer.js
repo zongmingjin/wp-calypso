@@ -17,6 +17,15 @@ export const items = createReducer(
 	{
 		[ NOTICE_CREATE ]: ( state, action ) => {
 			const { notice } = action;
+			if ( 'production' !== process.env.NODE_ENV ) {
+				// Falsy values `null`, `undefined`, `false`, `''` aren't acceptable.
+				// Falsy `0` should be valid.
+				if ( ! notice.noticeId && 0 !== notice.noticeId ) {
+					throw new TypeError(
+						`Expected valid noticeId but found: ${ JSON.stringify( notice.noticeId ) }`
+					);
+				}
+			}
 			return {
 				...state,
 				[ notice.noticeId ]: notice,
