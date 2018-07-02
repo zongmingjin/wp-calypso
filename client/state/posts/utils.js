@@ -34,6 +34,7 @@ import { moment } from 'i18n-calypso';
  * Internal dependencies
  */
 import { DEFAULT_POST_QUERY } from './constants';
+import { sanitizeTitleWithDashes } from 'lib/posts/utils';
 import pickCanonicalImage from 'lib/post-normalizer/rule-pick-canonical-image';
 import decodeEntities from 'lib/post-normalizer/rule-decode-entities';
 import detectMedia from 'lib/post-normalizer/rule-content-detect-media';
@@ -409,6 +410,10 @@ export function isStatusEqual( localStatusEdit, savedStatus ) {
 	// in the UI and request `pending` instead of `publish` if the user doesn't
 	// have the rights.
 	return localStatusEdit === savedStatus;
+}
+
+export function isSlugEqual( localSlugEdit, savedSlug ) {
+	return sanitizeTitleWithDashes( localSlugEdit, 'save' ) === savedSlug;
 }
 
 function isUnappliedMetadataEdit( edit, savedMetadata ) {

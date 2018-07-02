@@ -6,6 +6,8 @@
 
 import url from 'url';
 import { moment } from 'i18n-calypso';
+import { isEmpty, toLower, trim, trimEnd } from 'lodash';
+import striptags from 'striptags';
 
 /**
  * Internal dependencies
@@ -301,3 +303,88 @@ export const getOffsetDate = function( date, tz ) {
 
 	return moment( moment.tz( date, tz ) );
 };
+
+export function sanitizeTitleWithDashes( title, context = 'display' ) {
+	title = trim( title );
+
+	if ( isEmpty( title ) ) {
+		return '';
+	}
+
+	title = striptags( title );
+
+	// Preserve escaped octets.
+	title = title.replace( /%([a-fA-F0-9]{2})/g, '---$1---' );
+
+	// Remove percent signs that are not part of an octet.
+	title = title.replace( /%/g, '' );
+
+	// Restore octets.
+	title = title.replace( /---([a-fA-F0-9]{2})---/g, '%$1' );
+
+	// @TODO properly handle UTF-8 & other multibyte chars
+	title = toLower( title );
+
+	if ( 'save' === context ) {
+		// Convert nbsp, ndash and mdash to hyphens
+		title = title.replace( /[\xa0\u2013\u2014]/g, '-' );
+
+		// Convert nbsp, ndash and mdash HTML entities to hyphens
+		title = title.replace( /&(nbsp|#160|ndash|#8211|mdash|#8212);/g, '-' );
+
+		// Convert forward slash to hyphen
+		title = title.replace( /\//g, '-' );
+
+		// Strip these characters entirely:
+		const charStripRegExp = new RegExp(
+			'[' +
+				[
+					'\xa1', // iexcl / Inverted Exclamation Mark
+					'\xbf', // iquest / Inverted Question Mark
+					'\xab', // left-pointing double angle quotation mark
+					'\xbb', // right-pointing double angle quotation mark
+					'\u2039', // single left-pointing angle quotation mark
+					'\u203a', // single left-pointing angle quotation mark
+					'\u2018',
+					'\u2019',
+					'\u201c', // ldquo / left double-quotation mark
+					'\u201d', // rdquo / right double-quotation mark
+					/* @TODO
+						// curly quotes
+				done:		'%e2%80%98', '%e2%80%99', '%e2%80%9c', '%e2%80%9d',
+						'%e2%80%9a', '%e2%80%9b', '%e2%80%9e', '%e2%80%9f',
+						// copy, reg, deg, hellip and trade
+						'%c2%a9', '%c2%ae', '%c2%b0', '%e2%80%a6', '%e2%84%a2',
+						// acute accents
+						'%c2%b4', '%cb%8a', '%cc%81', '%cd%81',
+						// grave accent, macron, caron
+						'%cc%80', '%cc%84', '%cc%8c',
+						*/
+				].join() +
+				']',
+			'g'
+		);
+		title = title.replace( charStripRegExp, '' );
+
+		// Convert times / multiplication sign to x
+		title = title.replace( /\xd7/g, 'x' );
+	}
+
+	// kill entities
+	title = title.replace( /&.+?;/g, '' );
+
+	// Convert periods to dashes
+	title = title.replace( /\./g, '-' );
+
+	title = title.replace( /[^%a-z0-9 _-]/, '' );
+
+	// Collapse whitespace to a single dash
+	title = title.replace( /\s+/g, '-' );
+
+	title = title.replace( /-+/g, '-' );
+
+	// Don't end in a dash
+	title = trimEnd( title, '-' );
+
+	return title;
+}
