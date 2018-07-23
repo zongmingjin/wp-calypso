@@ -18,6 +18,7 @@ const prism = require( 'prismjs' );
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
 const CircularDependencyPlugin = require( 'circular-dependency-plugin' );
 const os = require( 'os' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 /**
  * Internal dependencies
@@ -72,6 +73,31 @@ const babelLoader = {
 	},
 };
 
+function recursiveIssuer( m ) {
+	if ( m.issuer ) {
+		return recursiveIssuer( m.issuer );
+	} else if ( m.name ) {
+		return m.name;
+	}
+	return false;
+}
+
+function cssGroups() {
+	//const sections = require( 'client/sections.js' );
+	const sections = [];
+	const cacheGroups = {};
+	return sections.forEach( function( section ) {
+		cacheGroups[ section.name ] = {
+			name: section.name,
+			test: ( m, c, entry = section.name ) =>
+				m.constructor.name === 'CssModule' && recursiveIssuer( m ) === entry,
+			//test: /\.scss$/,
+			chunks: 'all',
+			enforce: true,
+		};
+	} );
+}
+
 const webpackConfig = {
 	bail: ! isDevelopment,
 	entry: { build: [ path.join( __dirname, 'client', 'boot', 'app' ) ] },
@@ -91,6 +117,7 @@ const webpackConfig = {
 			name: isDevelopment || shouldEmitStats,
 			maxAsyncRequests: 20,
 			maxInitialRequests: 5,
+			cacheGroups: cssGroups(),
 		},
 		runtimeChunk: codeSplit ? { name: 'manifest' } : false,
 		moduleIds: 'named',
@@ -135,6 +162,10 @@ const webpackConfig = {
 					},
 					babelLoader,
 				],
+			},
+			{
+				test: /\.scss$/,
+				use: [ MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader' ],
 			},
 			{
 				test: /node_modules[\/\\](redux-form|react-redux)[\/\\]es/,
@@ -184,7 +215,7 @@ const webpackConfig = {
 		],
 	},
 	resolve: {
-		extensions: [ '.json', '.js', '.jsx' ],
+		extensions: [ '.json', '.js', '.jsx', '.scss' ],
 		modules: [ path.join( __dirname, 'client' ), 'node_modules' ],
 		alias: Object.assign(
 			{
@@ -206,6 +237,9 @@ const webpackConfig = {
 		} ),
 		new webpack.NormalModuleReplacementPlugin( /^path$/, 'path-browserify' ),
 		new webpack.IgnorePlugin( /^props$/ ),
+		new MiniCssExtractPlugin( {
+			filename: '[name].css',
+		} ),
 		new CopyWebpackPlugin( [
 			{ from: 'node_modules/flag-icon-css/flags/4x3', to: 'images/flags' },
 		] ),

@@ -1,8 +1,11 @@
 /** @format */
+
 /**
  * External dependencies
  */
 import wp from 'wp';
+import Button from 'components/button';
+
 const { RichText } = wp.editor;
 
 const attributes = {
@@ -21,6 +24,7 @@ const edit = ( { attributes: { notes }, className, isSelected, setAttributes } )
 			backgroundColor: '#c0e7ff',
 		} }
 	>
+		<Button>Press me</Button>
 		{ ! isSelected && (
 			<span style={ { position: 'absolute', top: 0, left: '8px', fontStyle: 'italic' } }>
 				<span role="img" aria-label="notebook">
