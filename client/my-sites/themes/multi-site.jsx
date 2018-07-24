@@ -4,6 +4,7 @@
  * External dependencies
  */
 
+require( './style.scss' );
 import React from 'react';
 
 /**

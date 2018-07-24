@@ -1,5 +1,6 @@
 /** @format */
 
+require( 'stylesheets/style.scss' );
 /**
  * External dependencies
  */

@@ -14,11 +14,11 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const AssetsWriter = require( './server/bundler/assets-writer' );
 const StatsWriter = require( './server/bundler/stats-writer' );
-const prism = require( 'prismjs' );
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
 const CircularDependencyPlugin = require( 'circular-dependency-plugin' );
 const os = require( 'os' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const autoprefixer = require( 'autoprefixer' );
 
 /**
  * Internal dependencies
@@ -83,14 +83,14 @@ function recursiveIssuer( m ) {
 }
 
 function cssGroups() {
-	//const sections = require( 'client/sections.js' );
-	const sections = [];
+	const sections = require( 'client/sections.js' );
 	const cacheGroups = {};
 	return sections.forEach( function( section ) {
 		cacheGroups[ section.name ] = {
 			name: section.name,
-			test: ( m, c, entry = section.name ) =>
-				m.constructor.name === 'CssModule' && recursiveIssuer( m ) === entry,
+			test: ( m, c, entry = section.name ) => {
+				return m.constructor.name === 'CssModule' && recursiveIssuer( m ) === entry;
+			},
 			//test: /\.scss$/,
 			chunks: 'all',
 			enforce: true,
@@ -164,8 +164,40 @@ const webpackConfig = {
 				],
 			},
 			{
+				test: /\.css$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					{
+						loader: require.resolve( 'css-loader' ),
+					},
+					{
+						loader: require.resolve( 'postcss-loader' ),
+						options: {
+							ident: 'postcss',
+							plugins: () => [
+								require( 'postcss-flexbugs-fixes' ),
+								autoprefixer( {
+									flexbox: 'no-2009',
+								} ),
+							],
+						},
+					},
+				],
+			},
+			{
 				test: /\.scss$/,
-				use: [ MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader' ],
+				use: [
+					calypsoEnv === 'production' ? MiniCssExtractPlugin.loader : 'style-loader',
+					'css-loader',
+					'postcss-loader',
+					{
+						loader: 'sass-loader',
+						options: {
+							indentedSyntax: false,
+							includePaths: [ 'client' ],
+						},
+					},
+				],
 			},
 			{
 				test: /node_modules[\/\\](redux-form|react-redux)[\/\\]es/,
@@ -196,26 +228,10 @@ const webpackConfig = {
 				test: /node_modules[\/\\]tinymce/,
 				use: 'imports-loader?this=>window',
 			},
-			{
-				test: /README\.md$/,
-				use: [
-					{ loader: 'html-loader' },
-					{
-						loader: 'markdown-loader',
-						options: {
-							sanitize: true,
-							highlight: function( code, language ) {
-								const syntax = prism.languages[ language ];
-								return syntax ? prism.highlight( code, syntax ) : code;
-							},
-						},
-					},
-				],
-			},
 		],
 	},
 	resolve: {
-		extensions: [ '.json', '.js', '.jsx', '.scss' ],
+		extensions: [ '.json', '.js', '.jsx' ],
 		modules: [ path.join( __dirname, 'client' ), 'node_modules' ],
 		alias: Object.assign(
 			{
@@ -238,7 +254,8 @@ const webpackConfig = {
 		new webpack.NormalModuleReplacementPlugin( /^path$/, 'path-browserify' ),
 		new webpack.IgnorePlugin( /^props$/ ),
 		new MiniCssExtractPlugin( {
-			filename: '[name].css',
+			filename: '[name]-webpack.css',
+			chunkFilename: '[name]-webpack.css',
 		} ),
 		new CopyWebpackPlugin( [
 			{ from: 'node_modules/flag-icon-css/flags/4x3', to: 'images/flags' },

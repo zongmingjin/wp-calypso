@@ -113,6 +113,14 @@ const webpackConfig = {
 				],
 			},
 			{
+				test: /\.scss$/,
+				use: [
+					'isomorphic-style-loader',
+					'css-loader',
+					'sass-loader',
+				],
+			},
+			{
 				test: /node_modules[\/\\](redux-form|react-redux)[\/\\]es/,
 				loader: 'babel-loader',
 				options: {
