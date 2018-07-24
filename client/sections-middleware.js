@@ -37,6 +37,7 @@ function createPageDefinition( path, sectionDefinition ) {
 	page( pathRegex, function( context, next ) {
 		const envId = sectionDefinition.envId;
 		const dispatch = context.store.dispatch;
+		require( 'stylesheets/style.scss' );
 
 		_lastSectionName = sectionDefinition.name;
 

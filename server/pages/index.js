@@ -48,7 +48,7 @@ const SERVER_BASE_PATH = '/public';
 const calypsoEnv = config( 'env_id' );
 
 const staticFiles = [
-	{ path: 'style.css' },
+	{ path: 'build-webpack.css' },
 	{ path: 'editor.css' },
 	{ path: 'tinymce/skins/wordpress/wp-content.css' },
 	{ path: 'style-debug.css' },

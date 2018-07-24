@@ -114,11 +114,7 @@ const webpackConfig = {
 			},
 			{
 				test: /\.scss$/,
-				use: [
-					'isomorphic-style-loader',
-					'css-loader',
-					'sass-loader',
-				],
+				use: [ 'isomorphic-style-loader', 'css-loader', 'sass-loader' ],
 			},
 			{
 				test: /node_modules[\/\\](redux-form|react-redux)[\/\\]es/,
@@ -138,7 +134,7 @@ const webpackConfig = {
 			path.join( __dirname, 'client', 'extensions' ),
 			'node_modules',
 		],
-		extensions: [ '.json', '.js', '.jsx' ],
+		extensions: [ '.json', '.js', '.jsx', '.scss' ],
 	},
 	node: {
 		// Tell webpack we want to supply absolute paths for server code,

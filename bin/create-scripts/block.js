@@ -13,7 +13,6 @@ const baseConfig = require( path.join( __rootDir, 'webpack.config.js' ) );
 const config = {
 	...baseConfig,
 	...{
-		mode: 'production',
 		entry: entryPath,
 		externals: {
 			...baseConfig.externals,
