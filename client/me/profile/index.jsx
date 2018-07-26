@@ -31,6 +31,7 @@ import twoStepAuthorization from 'lib/two-step-authorization';
 import { protectForm } from 'lib/protect-form';
 import { recordGoogleEvent } from 'state/analytics/actions';
 import PageViewTracker from 'lib/analytics/page-view-tracker';
+import MaterialCheckbox from 'components/material-checkbox';
 
 const debug = debugFactory( 'calypso:me:profile' );
 
@@ -66,6 +67,7 @@ const Profile = createReactClass( {
 				<ReauthRequired twoStepAuthorization={ twoStepAuthorization } />
 				<SectionHeader label={ this.props.translate( 'Profile' ) } />
 				<Card className="me-profile-settings">
+					<MaterialCheckbox label="hi" />
 					<EditGravatar />
 
 					<form onSubmit={ this.submitForm } onChange={ this.props.markChanged }>

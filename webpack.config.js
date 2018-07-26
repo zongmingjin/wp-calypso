@@ -142,6 +142,18 @@ const webpackConfig = {
 				],
 			},
 			{
+				test: /node_modules[\/\\]@material[\/\\](?!react)/,
+				use: [
+					{
+						loader: 'thread-loader',
+						options: {
+							workers: Math.max( 2, Math.floor( os.cpus().length / 2 ) ),
+						},
+					},
+					babelLoader,
+				],
+			},
+			{
 				test: /node_modules[\/\\](redux-form|react-redux)[\/\\]es/,
 				loader: 'babel-loader',
 				options: {
