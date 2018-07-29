@@ -48,6 +48,7 @@ export class ChecklistTask extends PureComponent {
 
 	render() {
 		const {
+			id,
 			buttonPrimary,
 			completed,
 			completedTitle,
@@ -67,6 +68,7 @@ export class ChecklistTask extends PureComponent {
 					'is-completed': completed,
 					'has-actionlink': hasActionlink,
 				} ) }
+				id={ id }
 			>
 				<div className="checklist__task-primary">
 					<h3 className="checklist__task-title">
