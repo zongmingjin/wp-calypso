@@ -29,7 +29,6 @@
 	"livechat_support_locales": [ "en", "es", "pt-br" ],
 	"support_site_locales": [ "en", "es", "de", "ja", "pt-br" ],
 	"features": {
-		"activity-log-wpcom-free": true,
 		"account-recovery": true,
 		"ad-tracking": false,
 		"automated-transfer": true,
@@ -149,7 +148,6 @@
 		"reader/full-errors": true,
 		"reader/likes-hover": true,
 		"reader/list-management": false,
-		"reader/nesting-arrow": true,
 		"reader/paste-to-link": true,
 		"reader/recommendations/posts": true,
 		"reader/related-posts": true,
@@ -207,6 +205,7 @@
 		"woocommerce/extension-settings-stripe-connect-flows": true,
 		"woocommerce/extension-settings-tax": true,
 		"woocommerce/extension-wcservices": true,
+		"woocommerce/extension-wcservices/international-labels": true,
 		"woocommerce/store-on-non-atomic-sites": true,
 		"wpcom-user-bootstrap": false
 	}

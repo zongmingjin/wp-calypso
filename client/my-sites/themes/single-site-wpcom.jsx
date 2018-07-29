@@ -29,7 +29,8 @@ const ConnectedSingleSiteWpcom = connectOptions( props => {
 
 	const displayUpsellBanner = ! requestingSitePlans && ! hasUnlimitedPremiumThemes;
 	const bannerLocationBelowSearch =
-		config.isEnabled( 'upsell/nudge-a-palooza' ) && abtest( 'nudgeAPalooza' ) === 'themesUpsells';
+		config.isEnabled( 'upsell/nudge-a-palooza' ) &&
+		abtest( 'nudgeAPalooza' ) === 'themesNudgesUpdates';
 
 	const upsellUrl = `/plans/${ siteSlug }`;
 	let upsellBanner = null;
@@ -44,6 +45,7 @@ const ConnectedSingleSiteWpcom = connectOptions( props => {
 					title={ 'Unlock ALL premium themes with our Premium and Business plans!' }
 					event="themes_plans_free_personal"
 					callToAction={ 'View Plans' }
+					forceHref={ true }
 				/>
 			);
 		} else {

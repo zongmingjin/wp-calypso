@@ -42,6 +42,15 @@
 	@include breakpoint( '<660px' ) {
 		margin-left: 10px;
 	}
+
+	&.is-loading span {
+		display: block;
+		height: 23px;
+		width: 100px;
+		margin: 3px 0;
+		background-color: $gray-lighten-20;
+		animation: loading-fade 1.6s ease-in-out infinite;
+	}
 }
 
 .activity-log__rewind-toggle {
@@ -207,4 +216,11 @@
 		// cdot three-per-em-space
 		content: '\00b7\2004';
 	}
+}
+
+.activity-log__limit-notice {
+	text-align: center;
+	font-style: italic;
+	font-size: smaller;
+	padding: 20px 0;
 }

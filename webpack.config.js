@@ -8,7 +8,7 @@
  * External dependencies
  */
 const _ = require( 'lodash' );
-const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
+const CopyWebpackPlugin = require( './server/bundler/copy-webpack-plugin' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
@@ -67,6 +67,8 @@ function getAliasesForExtensions() {
 const babelLoader = {
 	loader: 'babel-loader',
 	options: {
+		configFile: path.resolve( __dirname, 'babel.config.js' ),
+		babelrc: false,
 		cacheDirectory: path.join( __dirname, 'build', '.babel-client-cache' ),
 		cacheIdentifier,
 	},
@@ -191,6 +193,7 @@ const webpackConfig = {
 				'gridicons/example': 'gridicons/dist/example',
 				'react-virtualized': 'react-virtualized/dist/commonjs',
 				'social-logos/example': 'social-logos/build/example',
+				debug: path.resolve( __dirname, 'node_modules/debug' ),
 			},
 			getAliasesForExtensions()
 		),

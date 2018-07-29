@@ -12,28 +12,34 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
+import wrapSettingsForm from 'my-sites/site-settings/wrap-settings-form';
+import { decodeEntities } from 'lib/formatting';
+import scrollTo from 'lib/scroll-to';
 import Button from 'components/button';
 import Card from 'components/card';
 import DocumentHead from 'components/data/document-head';
 import FormFieldset from 'components/forms/form-fieldset';
 import FormInput from 'components/forms/form-text-input';
-import { decodeEntities } from 'lib/formatting';
 import FormLabel from 'components/forms/form-label';
 import FormSettingExplanation from 'components/forms/form-setting-explanation';
 import FormSelect from 'components/forms/form-select';
 import FormTextarea from 'components/forms/form-textarea';
 import HeaderCake from 'components/header-cake';
-import scrollTo from 'lib/scroll-to';
 import Notice from 'components/notice';
-import QueryTerms from 'components/data/query-terms';
 import TermTreeSelector from 'blocks/term-tree-selector';
 import PodcastCoverImageSetting from 'my-sites/site-settings/podcast-cover-image-setting';
 import PodcastFeedUrl from './feed-url';
 import PodcastingPrivateSiteMessage from './private-site';
 import PodcastingNoPermissionsMessage from './no-permissions';
 import PodcastingNotSupportedMessage from './not-supported';
-import wrapSettingsForm from 'my-sites/site-settings/wrap-settings-form';
+import PodcastingPublishNotice from './publish-notice';
+import PodcastingSupportLink from './support-link';
 import podcastingTopics from './topics';
+
+/**
+ * Selectors, actions, and query components
+ */
+import QueryTerms from 'components/data/query-terms';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
 import isPrivateSite from 'state/selectors/is-private-site';
 import canCurrentUser from 'state/selectors/can-current-user';
@@ -215,7 +221,10 @@ class PodcastingDetails extends Component {
 						backHref={ writingHref }
 						backText={ translate( 'Writing' ) }
 					>
-						<h1>{ translate( 'Podcasting Settings' ) }</h1>
+						<h1>
+							{ translate( 'Podcasting Settings' ) }
+							<PodcastingSupportLink showText={ false } iconSize={ 16 } />
+						</h1>
 					</HeaderCake>
 					{ ! error && (
 						<Card className="podcasting-details__category-wrapper">
@@ -246,12 +255,27 @@ class PodcastingDetails extends Component {
 	}
 
 	renderCategorySetting() {
-		const { siteId, podcastingCategoryId, isCategoryChanging, translate } = this.props;
+		const {
+			siteId,
+			isPodcastingEnabled,
+			podcastingCategoryId,
+			isCategoryChanging,
+			translate,
+			newPostUrl,
+		} = this.props;
 
 		return (
 			<Fragment>
 				<QueryTerms siteId={ siteId } taxonomy="category" />
 				<FormFieldset>
+					{ isPodcastingEnabled && (
+						<div className="podcasting-details__publish-wrapper">
+							<PodcastingPublishNotice podcastingCategoryId={ podcastingCategoryId } />
+							<Button className="podcasting-details__publish-button" href={ newPostUrl }>
+								{ translate( 'Create Episode' ) }
+							</Button>
+						</div>
+					) }
 					<FormLabel>{ translate( 'Podcast Category' ) }</FormLabel>
 					<FormSettingExplanation>
 						{ translate(
@@ -447,9 +471,12 @@ const connectComponent = connect( ( state, ownProps ) => {
 	const isJetpack = isJetpackSite( state, siteId );
 	const isAutomatedTransfer = isSiteAutomatedTransfer( state, siteId );
 
+	const siteSlug = getSelectedSiteSlug( state );
+	const newPostUrl = `/post/${ siteSlug }`;
+
 	return {
 		siteId,
-		siteSlug: getSelectedSiteSlug( state ),
+		siteSlug,
 		isPrivate: isPrivateSite( state, siteId ),
 		isPodcastingEnabled,
 		podcastingCategoryId,
@@ -458,6 +485,7 @@ const connectComponent = connect( ( state, ownProps ) => {
 		userCanManagePodcasting: canCurrentUser( state, siteId, 'manage_options' ),
 		isUnsupportedSite: isJetpack && ! isAutomatedTransfer,
 		isSavingSettings,
+		newPostUrl,
 	};
 } );
 

@@ -16,7 +16,6 @@
 	"rebrand_cities_prefix": "rebrandcitiestestsite",
 	"livechat_support_locales": [ "en", "es", "pt-br" ],
 	"features": {
-		"activity-log-wpcom-free": true,
 		"ad-tracking": false,
 		"automated-transfer": true,
 		"apple-pay": true,
@@ -120,7 +119,6 @@
 		"reader/conversations": true,
 		"reader/following-intro": true,
 		"reader/full-errors": true,
-		"reader/nesting-arrow": true,
 		"reader/paste-to-link": true,
 		"reader/recommendations/posts": true,
 		"reader/related-posts": true,
