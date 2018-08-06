@@ -35,29 +35,28 @@ const CartStore = {
 			hasPendingServerUpdates: hasPendingServerUpdates(),
 		} );
 	},
+	setSelectedSiteId( selectedSiteId ) {
+		const newCartKey = selectedSiteId || 'no-site';
+
+		if ( _cartKey === newCartKey ) {
+			return;
+		}
+
+		_cartKey = newCartKey;
+
+		if ( _synchronizer && _poller ) {
+			PollerPool.remove( _poller );
+			_synchronizer.off( 'change', emitChange );
+		}
+
+		_synchronizer = cartSynchronizer( _cartKey, wpcom );
+		_synchronizer.on( 'change', emitChange );
+
+		_poller = PollerPool.add( CartStore, _synchronizer._poll.bind( _synchronizer ) );
+	},
 };
 
 emitter( CartStore );
-
-function setSelectedSiteId( selectedSiteId ) {
-	const newCartKey = selectedSiteId || 'no-site';
-
-	if ( _cartKey === newCartKey ) {
-		return;
-	}
-
-	_cartKey = newCartKey;
-
-	if ( _synchronizer && _poller ) {
-		PollerPool.remove( _poller );
-		_synchronizer.off( 'change', emitChange );
-	}
-
-	_synchronizer = cartSynchronizer( _cartKey, wpcom );
-	_synchronizer.on( 'change', emitChange );
-
-	_poller = PollerPool.add( CartStore, _synchronizer._poll.bind( _synchronizer ) );
-}
 
 function hasLoadedFromServer() {
 	return _synchronizer && _synchronizer.hasLoadedFromServer();
@@ -149,5 +148,5 @@ export default CartStore;
 
 // Subscribe to the Redux store to get updates about the selected site
 getReduxStore().then( store =>
-	store.subscribe( () => setSelectedSiteId( getSelectedSiteId( store.getState() ) ) )
+	store.subscribe( () => CartStore.setSelectedSiteId( getSelectedSiteId( store.getState() ) ) )
 );
