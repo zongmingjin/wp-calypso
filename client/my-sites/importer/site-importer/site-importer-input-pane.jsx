@@ -5,35 +5,33 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import Dispatcher from 'dispatcher';
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
-import { noop, every, has, defer, get, trim } from 'lodash';
+import { defer, every, flow, get, has, noop, trim } from 'lodash';
 import url from 'url';
 
 /**
  * Internal dependencies
  */
 import wpLib from 'lib/wp';
-
-const wpcom = wpLib.undocumented();
-
 import { toApi, fromApi } from 'lib/importer/common';
-
-import { startMappingAuthors, startImporting, mapAuthor, finishUpload } from 'lib/importer/actions';
+import {
+	startMappingAuthors,
+	startImporting,
+	mapAuthor,
+	finishUpload,
+} from 'state/imports/actions';
 import user from 'lib/user';
-
 import { appStates } from 'state/imports/constants';
 import Button from 'components/forms/form-button';
 import ErrorPane from '../error-pane';
 import TextInput from 'components/forms/form-text-input';
-
 import SiteImporterSitePreview from './site-importer-site-preview';
-import { connectDispatcher } from '../dispatcher-converter';
-
 import { loadmShotsPreview } from './site-preview-actions';
-
 import { recordTracksEvent } from 'state/analytics/actions';
+
+// TODO: Actions shouldn't be here in a component - reduxify!
+const wpcom = wpLib.undocumented();
 
 const NO_ERROR_STATE = {
 	error: false,
@@ -75,22 +73,23 @@ class SiteImporterInputPane extends React.Component {
 		if ( newImporterState !== oldImporterState && newImporterState === appStates.UPLOAD_SUCCESS ) {
 			// WXR was uploaded, map the authors
 			if ( singleAuthorSite ) {
-				defer( props => {
+				defer( () => {
 					const currentUserData = user().get();
 					const currentUser = {
 						...currentUserData,
 						name: currentUserData.display_name,
 					};
-
-					const mappingFunction = this.props.mapAuthorFor( props.importerStatus.importerId );
+					const authors = nextProps.importerStatus.customData.sourceAuthors;
 
 					// map all the authors to the current user
-					props.importerStatus.customData.sourceAuthors.forEach( author => {
-						mappingFunction( author, currentUser );
+					authors.forEach( author => {
+						this.props.mapAuthor( nextProps.importerStatus.importerId, author, currentUser );
 					} );
-				}, nextProps );
+				} );
 			} else {
-				defer( props => startMappingAuthors( props.importerStatus.importerId ), nextProps );
+				defer( () => {
+					nextProps.startMappingAuthors( nextProps.importerStatus.importerId );
+				} );
 
 				this.props.recordTracksEvent( 'calypso_site_importer_map_authors_multi', {
 					blog_id: this.props.site.ID,
@@ -108,9 +107,9 @@ class SiteImporterInputPane extends React.Component {
 			const newAuthors = every( nextProps.importerStatus.customData.sourceAuthors, 'mappedTo' );
 
 			if ( oldAuthors === false && newAuthors === true ) {
-				defer( props => {
-					startImporting( props.importerStatus );
-				}, nextProps );
+				defer( () => {
+					nextProps.startImporting( nextProps.importerStatus );
+				} );
 
 				this.props.recordTracksEvent( 'calypso_site_importer_map_authors_single', {
 					blog_id: this.props.site.ID,
@@ -254,7 +253,7 @@ class SiteImporterInputPane extends React.Component {
 					[ 'site_url', this.state.importSiteURL ],
 				],
 			} )
-			.then( resp => {
+			.then( response => {
 				this.setState( { loading: false } );
 
 				this.props.recordTracksEvent( 'calypso_site_importer_start_import_done', {
@@ -271,10 +270,10 @@ class SiteImporterInputPane extends React.Component {
 					site_engine: this.state.importData.engine,
 				} );
 
-				const data = fromApi( resp );
-				const action = finishUpload( this.props.importerStatus.importerId )( data );
+				// TODO: finishUpload should handle data parsing
+				const uploadData = fromApi( response );
 				defer( () => {
-					Dispatcher.handleViewAction( action );
+					this.props.finishUpload( this.props.importerStatus.importerId, uploadData );
 				} );
 			} )
 			.catch( err => {
@@ -381,14 +380,10 @@ class SiteImporterInputPane extends React.Component {
 	}
 }
 
-const mapDispatchToProps = dispatch => ( {
-	mapAuthorFor: importerId => ( source, target ) =>
-		defer( () => {
-			dispatch( mapAuthor( importerId, source, target ) );
-		} ),
-} );
-
-export default connect(
-	null,
-	{ recordTracksEvent }
-)( connectDispatcher( null, mapDispatchToProps )( localize( SiteImporterInputPane ) ) );
+export default flow(
+	connect(
+		null,
+		{ recordTracksEvent, startMappingAuthors, startImporting, mapAuthor, finishUpload }
+	),
+	localize
+)( SiteImporterInputPane );
