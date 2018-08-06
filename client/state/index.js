@@ -99,6 +99,8 @@ import userSettings from './user-settings/reducer';
 import wordads from './wordads/reducer';
 import config from 'config';
 
+import importers from './imports/reducer';
+
 /**
  * Module variables
  */
@@ -112,6 +114,7 @@ const extensions = combineReducers(
 );
 
 const reducers = {
+	importers,
 	account,
 	analyticsTracking,
 	accountRecovery,
