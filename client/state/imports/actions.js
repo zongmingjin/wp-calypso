@@ -34,15 +34,13 @@ const wpcom = wpLib.undocumented();
 
 const ID_GENERATOR_PREFIX = 'local-generated-id-';
 
-const getLockImportAction = importerId => ( { type: IMPORTS_IMPORT_LOCK, importerId } );
-const getUnlockImportAction = importerId => ( { type: IMPORTS_IMPORT_UNLOCK, importerId } );
-
 const fetchImports = { type: IMPORTS_FETCH };
 const fetchImportsCompleted = { type: IMPORTS_FETCH_COMPLETED };
 
 export const cancelImport = ( siteId, importerId ) => ( dispatch, getState ) => {
-	dispatch( getLockImportAction( importerId ) );
-	Dispatcher.handleViewAction( getLockImportAction( importerId ) );
+	dispatch( { type: IMPORTS_IMPORT_LOCK, importerId } );
+	Dispatcher.handleViewAction( { type: IMPORTS_IMPORT_LOCK, importerId } );
+
 	dispatch( {
 		type: IMPORTS_IMPORT_CANCEL,
 		importerId,
@@ -103,8 +101,8 @@ export const cancelImport = ( siteId, importerId ) => ( dispatch, getState ) => 
 
 export const resetImport = ( siteId, importerId ) => ( dispatch, getState ) => {
 	// We are done with this import session, so lock it away
-	dispatch( getLockImportAction( importerId ) );
-	Dispatcher.handleViewAction( getLockImportAction( importerId ) );
+	dispatch( { type: IMPORTS_IMPORT_LOCK, importerId } );
+	Dispatcher.handleViewAction( { type: IMPORTS_IMPORT_LOCK, importerId } );
 
 	dispatch( {
 		type: IMPORTS_IMPORT_RESET,
@@ -174,9 +172,12 @@ export const startImporting = importerStatus => {
 		site: { ID: siteId },
 	} = importerStatus;
 
+	console.log( 'startImporting', importerStatus );
+
 	return dispatch => {
-		dispatch( getUnlockImportAction( importerId ) );
-		Dispatcher.handleViewAction( getUnlockImportAction( importerId ) );
+		dispatch( { type: IMPORTS_IMPORT_UNLOCK, importerId } );
+		Dispatcher.handleViewAction( { type: IMPORTS_IMPORT_UNLOCK, importerId } );
+
 		dispatch( {
 			type: IMPORTS_START_IMPORTING,
 			importerId,
@@ -271,12 +272,12 @@ export const startUpload = ( importerStatus, file ) => ( dispatch, getState ) =>
 };
 
 export const startMappingAuthors = importerId => dispatch =>
-	dispatch( getLockImportAction( importerId ) ) &&
+	dispatch( { type: IMPORTS_IMPORT_LOCK, importerId } ) &&
 	dispatch( {
 		type: IMPORTS_AUTHORS_START_MAPPING,
 		importerId,
 	} ) &&
-	Dispatcher.handleViewAction( getLockImportAction( importerId ) ) &&
+	Dispatcher.handleViewAction( { type: IMPORTS_IMPORT_LOCK, importerId } ) &&
 	Dispatcher.handleViewAction( {
 		type: IMPORTS_AUTHORS_START_MAPPING,
 		importerId,

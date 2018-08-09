@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { filter, get, includes, omit } from 'lodash';
+import { get, includes, omit, omitBy } from 'lodash';
 import { createReducer, combineReducers } from 'state/utils';
 import {
 	// IMPORTS_AUTHORS_SET_MAPPING,
@@ -100,11 +100,11 @@ const percentComplete = createReducer(
 const lockedImports = createReducer(
 	{},
 	{
-		[ IMPORTS_IMPORT_LOCK ]: ( state, action ) => ( {
+		[ IMPORTS_IMPORT_LOCK ]: ( state, action ) => console.log( action ) || ( {
 			...state,
 			[ action.importerId ]: true,
 		} ),
-		[ IMPORTS_IMPORT_LOCK ]: ( state, action ) => ( {
+		[ IMPORTS_IMPORT_LOCK ]: ( state, action ) => console.log( action ) || ( {
 			...state,
 			[ action.importerId ]: false,
 		} ),
@@ -145,13 +145,15 @@ const errors = createReducer(
 const mainData = createReducer(
 	{},
 	{
-		[ IMPORTS_UPLOAD_COMPLETED ]: ( state, action ) => ( {
+		[ IMPORTS_UPLOAD_COMPLETED ]: ( state, action ) => console.log( action ) || ( {
 			...rejectItem( state, action ),
 			[ action.importerStatus.importerId ]: action.importerStatus,
 		} ),
 		[ IMPORTS_AUTHORS_START_MAPPING ]: ( state, action ) => {
 			const importerData = get( state, action.importerId, {} );
 			const authors = get( state, [ action.importerId, 'customData.sourceAuthors' ], [] );
+
+			console.log( action )
 
 			return {
 				...state,
@@ -173,10 +175,11 @@ const mainData = createReducer(
 			};
 		},
 		[ IMPORTS_IMPORT_RECEIVE ]: ( state, action ) => {
+			console.log( action, action.isLocked );
 			// isLocked comes from getState
 			return action.isLocked
 				? state
-				: filter(
+				: omitBy(
 						{
 							...state,
 							[ action.importerStatus.importerId ]: action.importerStatus,
@@ -185,7 +188,7 @@ const mainData = createReducer(
 							includes( [ appStates.CANCEL_PENDING, appStates.DEFUNCT ], importer.importerState )
 				  );
 		},
-		[ IMPORTS_UPLOAD_SET_PROGRESS ]: ( state, action ) => ( {
+		[ IMPORTS_UPLOAD_SET_PROGRESS ]: ( state, action ) => console.log( action ) || ( {
 			...state,
 			[ action.importerId ]: {
 				// Get the original data and only update the progress
@@ -193,7 +196,7 @@ const mainData = createReducer(
 				progress: ( action.uploadLoaded / ( action.uploadTotal + Number.EPSILON ) ) * 100,
 			},
 		} ),
-		[ IMPORTS_IMPORT_START ]: ( state, action ) => ( {
+		[ IMPORTS_IMPORT_START ]: ( state, action ) => console.log( action ) || ( {
 			...state,
 			[ action.importerId ]: {
 				importerId: action.importerId,

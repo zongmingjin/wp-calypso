@@ -70,7 +70,11 @@ class SiteImporterInputPane extends React.Component {
 		const oldImporterState = this.props.importerStatus.importerState;
 		const singleAuthorSite = get( this.props.site, 'single_user_site', true );
 
+
 		if ( newImporterState !== oldImporterState && newImporterState === appStates.UPLOAD_SUCCESS ) {
+
+			console.log('1', singleAuthorSite );
+
 			// WXR was uploaded, map the authors
 			if ( singleAuthorSite ) {
 				defer( () => {
@@ -87,6 +91,9 @@ class SiteImporterInputPane extends React.Component {
 					} );
 				} );
 			} else {
+
+				console.log('2', startMapping );
+
 				defer( () => {
 					nextProps.startMappingAuthors( nextProps.importerStatus.importerId );
 				} );

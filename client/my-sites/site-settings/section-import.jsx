@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import { isEnabled } from 'config';
-import { filter, flow, get, isEmpty } from 'lodash';
+import { filter, flow, get, isEmpty, size } from 'lodash';
 
 /**
  * Internal dependencies
@@ -168,6 +168,8 @@ class SiteSettingsImport extends Component {
 				site,
 				siteTitle,
 			} ) );
+
+		console.log( { importsForSite }, size( importsForSite ) );
 
 		return isEmpty( importsForSite )
 			? this.renderIdleImporters( site, siteTitle, appStates.INACTIVE )

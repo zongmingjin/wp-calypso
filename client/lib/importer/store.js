@@ -56,9 +56,11 @@ const shouldRemove = importer =>
 const adjustImporterLock = ( state, { action } ) => {
 	switch ( action.type ) {
 		case IMPORTS_IMPORT_LOCK:
+			console.log( action );
 			return state.setIn( [ 'importerLocks', action.importerId ], true );
 
 		case IMPORTS_IMPORT_UNLOCK:
+			console.log( action );
 			return state.setIn( [ 'importerLocks', action.importerId ], false );
 
 		default:
