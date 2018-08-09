@@ -26,6 +26,7 @@ class UploadingPane extends React.PureComponent {
 		description: PropTypes.oneOfType( [ PropTypes.node, PropTypes.string ] ),
 		importerStatus: PropTypes.shape( {
 			filename: PropTypes.string,
+			importerId: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
 			importerState: PropTypes.string.isRequired,
 			percentComplete: PropTypes.number,
 		} ),

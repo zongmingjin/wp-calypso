@@ -163,9 +163,8 @@ class SiteSettingsImport extends Component {
 	renderImporters() {
 		const {
 			api: { isHydrated },
-			importers: imports,
 		} = this.state;
-		const { site } = this.props;
+		const { site, activeImports } = this.props;
 		const { slug, title } = site;
 		const siteTitle = title.length ? title : slug;
 
@@ -173,7 +172,7 @@ class SiteSettingsImport extends Component {
 			return this.renderIdleImporters( site, siteTitle, appStates.DISABLED );
 		}
 
-		const importsForSite = filterImportsForSite( site.ID, imports )
+		const importsForSite = filterImportsForSite( site.ID, activeImports )
 			// Add in the 'site' and 'siteTitle' properties to the import objects.
 			.map( item => ( {
 				...item,
@@ -262,6 +261,7 @@ export default flow(
 		state => ( {
 			site: getSelectedSite( state ),
 			siteSlug: getSelectedSiteSlug( state ),
+			activeImports: get( state, 'importers.mainData' ),
 		} ),
 		{ fetchState }
 	),

@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { castArray, each, includes } from 'lodash';
+import { castArray, each, get, includes } from 'lodash';
 import Dispatcher from 'dispatcher';
 
 /**
@@ -40,7 +40,7 @@ const getUnlockImportAction = importerId => ( { type: IMPORTS_IMPORT_UNLOCK, imp
 const fetchImports = { type: IMPORTS_FETCH };
 const fetchImportsCompleted = { type: IMPORTS_FETCH_COMPLETED };
 
-export const cancelImport = ( siteId, importerId ) => dispatch => {
+export const cancelImport = ( siteId, importerId ) => ( dispatch, getState ) => {
 	dispatch( getLockImportAction( importerId ) );
 	Dispatcher.handleViewAction( getLockImportAction( importerId ) );
 	dispatch( {
@@ -73,6 +73,12 @@ export const cancelImport = ( siteId, importerId ) => dispatch => {
 			} )
 		)
 		.then( data => {
+			const state = getState();
+			const isLocked = get(
+				state,
+				[ 'importers', 'lockedImports', data.importerStatus.importerId ],
+				false
+			);
 			const importerStatus = fromApi( data );
 
 			dispatch( fetchImportsCompleted );
@@ -81,6 +87,7 @@ export const cancelImport = ( siteId, importerId ) => dispatch => {
 			dispatch( {
 				type: IMPORTS_IMPORT_RECEIVE,
 				importerStatus,
+				isLocked,
 			} );
 			Dispatcher.handleViewAction( {
 				type: IMPORTS_IMPORT_RECEIVE,
@@ -94,18 +101,19 @@ export const cancelImport = ( siteId, importerId ) => dispatch => {
 		);
 };
 
-export const resetImport = ( siteId, importerId ) => dispatch => {
+export const resetImport = ( siteId, importerId ) => ( dispatch, getState ) => {
 	// We are done with this import session, so lock it away
 	dispatch( getLockImportAction( importerId ) );
 	Dispatcher.handleViewAction( getLockImportAction( importerId ) );
+
 	dispatch( {
 		type: IMPORTS_IMPORT_RESET,
-		importerId,
+		importerId: importerId,
 		siteId,
 	} );
 	Dispatcher.handleViewAction( {
 		type: IMPORTS_IMPORT_RESET,
-		importerId,
+		importerId: importerId,
 		siteId,
 	} );
 	dispatch( fetchImports );
@@ -121,6 +129,12 @@ export const resetImport = ( siteId, importerId ) => dispatch => {
 			} )
 		)
 		.then( data => {
+			const state = getState();
+			const isLocked = get(
+				state,
+				[ 'importers', 'lockedImports', data.importerStatus.importerId ],
+				false
+			);
 			const importerStatus = fromApi( data );
 
 			dispatch( { type: IMPORTS_FETCH_COMPLETED } );
@@ -128,6 +142,7 @@ export const resetImport = ( siteId, importerId ) => dispatch => {
 			dispatch( {
 				type: IMPORTS_IMPORT_RECEIVE,
 				importerStatus,
+				isLocked,
 			} );
 			Dispatcher.handleViewAction( {
 				type: IMPORTS_IMPORT_RECEIVE,
@@ -171,6 +186,7 @@ export const startImporting = importerStatus => {
 			importerId,
 		} );
 
+		// TODO: There's no handling here. Don't we have state to update?
 		wpcom.updateImporter(
 			siteId,
 			toApi( {
@@ -181,6 +197,8 @@ export const startImporting = importerStatus => {
 	};
 };
 
+// TODO: Once we switch over to redux only, we can rename these 'xBasic' functions
+// 		 and call them as basic actions, but right now we need to dispatch twice.
 export const finishUploadBasic = ( importerId, importerStatus ) => ( {
 	type: IMPORTS_UPLOAD_COMPLETED,
 	importerId,
@@ -206,13 +224,13 @@ export const setUploadProgress = ( importerId, { uploadLoaded, uploadTotal } ) =
 	Dispatcher.handleViewAction( action );
 };
 
-export const failUpload = ( importerId, error ) => ( {
+export const failUpload = ( importerId, { message } ) => ( {
 	type: IMPORTS_UPLOAD_FAILED,
 	importerId,
-	error,
+	error: message,
 } );
 
-export const startUpload = ( importerStatus, file ) => dispatch => {
+export const startUpload = ( importerStatus, file ) => ( dispatch, getState ) => {
 	const {
 		importerId,
 		site: { ID: siteId },
@@ -230,28 +248,20 @@ export const startUpload = ( importerStatus, file ) => dispatch => {
 					} )
 				),
 
-			onabort: () => cancelImport( siteId, importerId ),
+			onabort: () => {
+				cancelImport( siteId, importerId )( dispatch, getState );
+			},
 		} )
-		.then(
-			data =>
-				dispatch(
-					finishUpload(
-						importerId,
-						fromApi( {
-							...data,
-							siteId,
-						} )
-					)
-				) &&
-				Dispatcher.handleViewAction(
-					finishUpload(
-						importerId,
-						fromApi( {
-							...data,
-							siteId,
-						} )
-					)
+		.then( data =>
+			dispatch(
+				finishUpload(
+					importerId,
+					fromApi( {
+						...data,
+						siteId,
+					} )
 				)
+			)
 		)
 		.catch(
 			error =>
@@ -272,6 +282,8 @@ export const startMappingAuthors = importerId => dispatch =>
 		importerId,
 	} );
 
+// TODO: Once we switch over to redux only, we can rename these 'xBasic' functions
+// 		 and call them as basic actions, but right now we need to dispatch twice.
 export const mapAuthorBasic = ( importerId, sourceAuthor, targetAuthor ) => ( {
 	type: IMPORTS_AUTHORS_SET_MAPPING,
 	importerId,
@@ -286,7 +298,7 @@ export const mapAuthor = ( importerId, sourceAuthor, targetAuthor ) => dispatch 
 	Dispatcher.handleViewAction( action );
 };
 
-export const fetchState = siteId => dispatch => {
+export const fetchState = siteId => ( dispatch, getState ) => {
 	dispatch( { type: IMPORTS_FETCH } );
 	Dispatcher.handleViewAction( { type: IMPORTS_FETCH } );
 
@@ -297,11 +309,14 @@ export const fetchState = siteId => dispatch => {
 			dispatch( { type: IMPORTS_FETCH_COMPLETED } );
 			Dispatcher.handleViewAction( { type: IMPORTS_FETCH_COMPLETED } );
 
+			const state = getState();
+
 			each( importers, importer => {
 				const importerStatus = fromApi( importer );
-				// TODO: handle lockedImporter match
+				const isLocked = get( state, [ 'importers', 'lockedImports', importer.importerId ], false );
 				dispatch( {
 					type: IMPORTS_IMPORT_RECEIVE,
+					isLocked,
 					importerStatus,
 				} );
 				Dispatcher.handleViewAction( {
