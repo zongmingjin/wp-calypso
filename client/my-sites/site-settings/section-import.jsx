@@ -16,7 +16,6 @@ import { filter, flow, get, isEmpty } from 'lodash';
  */
 import CompactCard from 'components/card/compact';
 import EmptyContent from 'components/empty-content';
-import ImporterStore, { getState as getImporterState } from 'lib/importer/store';
 import Interval, { EVERY_FIVE_SECONDS } from 'lib/interval';
 import WordPressImporter from 'my-sites/importer/importer-wordpress';
 import MediumImporter from 'my-sites/importer/importer-medium';
@@ -69,15 +68,8 @@ class SiteSettingsImport extends Component {
 		site: PropTypes.object,
 	};
 
-	state = getImporterState();
-
 	componentDidMount() {
-		ImporterStore.on( 'change', this.updateState );
 		this.updateFromAPI();
-	}
-
-	componentWillUnmount() {
-		ImporterStore.off( 'change', this.updateState );
 	}
 
 	/**
@@ -185,10 +177,6 @@ class SiteSettingsImport extends Component {
 	updateFromAPI = () => {
 		const siteID = get( this, 'props.site.ID' );
 		siteID && this.props.fetchState( siteID );
-	};
-
-	updateState = () => {
-		this.setState( getImporterState() );
 	};
 
 	render() {
