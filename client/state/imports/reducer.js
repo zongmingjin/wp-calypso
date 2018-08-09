@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { omit } from 'lodash';
+import { filter, get, includes, omit } from 'lodash';
 import { createReducer, combineReducers } from 'state/utils';
 import {
 	// IMPORTS_AUTHORS_SET_MAPPING,
@@ -42,7 +42,7 @@ const retryCount = createReducer( 0, {
 	[ IMPORTS_FETCH_COMPLETED ]: () => 0,
 } );
 
-const importerState = createReducer(
+const importerStatus = createReducer(
 	{},
 	{
 		[ IMPORTS_UPLOAD_START ]: ( state, action ) => ( {
@@ -81,6 +81,7 @@ const importerState = createReducer(
 	}
 );
 
+// TODO: It's likely this will be redundant, remove it.
 const percentComplete = createReducer(
 	{},
 	{
@@ -135,16 +136,82 @@ const errors = createReducer(
 		} ),
 
 		[ IMPORTS_UPLOAD_COMPLETED ]: rejectItem,
-		[ IMPORTS_UPLOAD_COMPLETED ]: rejectItem,
+		[ IMPORTS_IMPORT_CANCEL ]: rejectItem,
+		[ IMPORTS_IMPORT_RESET ]: rejectItem,
+	}
+);
+
+// maybe rename
+const mainData = createReducer(
+	{},
+	{
+		[ IMPORTS_UPLOAD_COMPLETED ]: ( state, action ) => ( {
+			...rejectItem( state, action ),
+			[ action.importerStatus.importerId ]: action.importerStatus,
+		} ),
+		[ IMPORTS_AUTHORS_START_MAPPING ]: ( state, action ) => {
+			const importerData = get( state, action.importerId, {} );
+			const authors = get( state, [ action.importerId, 'customData.sourceAuthors' ], [] );
+
+			return {
+				...state,
+				[ action.importerId ]: {
+					...importerData,
+					customData: {
+						...importerData.customData,
+						sourceAuthors: authors.map(
+							author =>
+								action.sourceAuthor.id === get( author, 'id', null )
+									? {
+											...author,
+											mappedTo: action.targetAuthor,
+									  }
+									: author
+						),
+					},
+				},
+			};
+		},
+		[ IMPORTS_IMPORT_RECEIVE ]: ( state, action ) => {
+			// isLocked comes from getState
+			return action.isLocked
+				? state
+				: filter(
+						{
+							...state,
+							[ action.importerStatus.importerId ]: action.importerStatus,
+						},
+						importer =>
+							includes( [ appStates.CANCEL_PENDING, appStates.DEFUNCT ], importer.importerState )
+				  );
+		},
+		[ IMPORTS_UPLOAD_SET_PROGRESS ]: ( state, action ) => ( {
+			...state,
+			[ action.importerId ]: {
+				// Get the original data and only update the progress
+				...get( state, action.importerId, {} ),
+				progress: ( action.uploadLoaded / ( action.uploadTotal + Number.EPSILON ) ) * 100,
+			},
+		} ),
+		[ IMPORTS_IMPORT_START ]: ( state, action ) => ( {
+			...state,
+			[ action.importerId ]: {
+				importerId: action.importerId,
+				type: action.importerType,
+				importerState: appStates.READY_FOR_UPLOAD,
+				site: { ID: action.siteId },
+			},
+		} ),
 		[ IMPORTS_IMPORT_CANCEL ]: rejectItem,
 		[ IMPORTS_IMPORT_RESET ]: rejectItem,
 	}
 );
 
 export default combineReducers( {
+	mainData,
 	isFetching,
 	isHydrated,
-	importerState,
+	importerStatus,
 	percentComplete,
 	lockedImports,
 	filename,
