@@ -130,7 +130,7 @@ class PostShare extends Component {
 
 	isConnectionActive = connection =>
 		connection.status !== 'broken' &&
-		connection.status !== 'invalid' &&
+		// connection.status !== 'invalid' &&
 		this.skipConnection( connection );
 
 	activeConnections() {

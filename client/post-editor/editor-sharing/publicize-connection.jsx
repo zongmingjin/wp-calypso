@@ -44,10 +44,9 @@ export class EditorSharingPublicizeConnection extends React.Component {
 	isConnectionSkipped = () => {
 		const { post, connection } = this.props;
 		return (
-			( post &&
-				connection &&
-				includes( PostMetadata.publicizeSkipped( post ), connection.keyring_connection_ID ) ) ||
-			( connection.service === 'facebook' && ! this.isAdditionalExternalUser( connection ) )
+			post &&
+			connection &&
+			includes( PostMetadata.publicizeSkipped( post ), connection.keyring_connection_ID )
 		);
 	};
 
@@ -62,11 +61,7 @@ export class EditorSharingPublicizeConnection extends React.Component {
 
 	isDisabled = () => {
 		const { connection } = this.props;
-		return (
-			! connection ||
-			connection.read_only ||
-			( connection.service === 'facebook' && ! this.isAdditionalExternalUser( connection ) )
-		);
+		return ! connection || connection.read_only;
 	};
 
 	onChange = event => {
