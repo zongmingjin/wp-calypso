@@ -15,17 +15,28 @@ import classNames from 'classnames';
 import ControlItem from 'components/segmented-control/item';
 import { handleKeyEvent, getCurrentFocusedIndex, getSiblingIndex } from './utilities';
 
-export default class SegmentedControl extends React.Component {
+export default class SegmentedControlSimplified extends React.Component {
 	static propTypes = {
-		children: PropTypes.node.isRequired,
-		className: PropTypes.string,
+		initialSelected: PropTypes.string,
 		compact: PropTypes.bool,
-		onSelect: PropTypes.func,
+		className: PropTypes.string,
 		style: PropTypes.object,
+		onSelect: PropTypes.func,
+		options: PropTypes.arrayOf(
+			PropTypes.shape( {
+				value: PropTypes.string.isRequired,
+				label: PropTypes.string.isRequired,
+				path: PropTypes.string,
+			} )
+		).isRequired,
 	};
 	static defaultProps = { compact: false };
 	itemRefs = [];
 	focused = null;
+	state = {
+		selected: this.props.initialSelected || this.props.options[ 0 ].value,
+		keyboardNavigation: false,
+	};
 
 	/**
 	 * Allows for keyboard navigation
@@ -47,31 +58,24 @@ export default class SegmentedControl extends React.Component {
 		this.focused = index;
 	}
 
-	createChildRef( child, index ) {
-		return child.type === ControlItem ? ref => ( this.itemRefs[ index ] = ref ) : null;
+	renderOptions() {
+		return this.props.options.map( ( option, index ) => (
+			<ControlItem
+				index={ index }
+				key={ index }
+				onClick={ () => {
+					this.setState( { selected: option.value, keyboardNavigation: false } );
+					this.props.onSelect && this.props.onSelect( option );
+				} }
+				path={ option.path }
+				ref={ ref => ( this.itemRefs[ index ] = ref ) }
+				selected={ this.state.selected === option.value }
+				value={ option.value }
+			>
+				{ option.label }
+			</ControlItem>
+		) );
 	}
-
-	getSegmentedItems = () => {
-		let refIndex = 0;
-		// add keys and refs to children
-		return React.Children.map( this.props.children, ( child, index ) => {
-			const newChild = React.cloneElement( child, {
-				ref: this.createChildRef( child, refIndex ),
-				key: index,
-				onClick: event => {
-					this.setState( { keyboardNavigation: false }, () => {
-						typeof child.props.onClick === 'function' && child.props.onClick( event );
-					} );
-				},
-			} );
-
-			if ( child.type === ControlItem ) {
-				refIndex += 1;
-			}
-
-			return newChild;
-		} );
-	};
 
 	render() {
 		const segmentedClasses = {
@@ -88,7 +92,7 @@ export default class SegmentedControl extends React.Component {
 				onKeyDown={ handleKeyEvent( this.focusSibling ) }
 				onKeyUp={ () => this.setState( { keyboardNavigation: true } ) }
 			>
-				{ this.getSegmentedItems() }
+				{ this.renderOptions() }
 			</ul>
 		);
 	}
