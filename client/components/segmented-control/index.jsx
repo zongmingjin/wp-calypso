@@ -4,9 +4,8 @@
  * External dependencies
  */
 
-import { filter, map } from 'lodash';
+import { filter, map, noop } from 'lodash';
 import PropTypes from 'prop-types';
-import ReactDom from 'react-dom';
 import React from 'react';
 import classNames from 'classnames';
 
@@ -15,15 +14,7 @@ import classNames from 'classnames';
  */
 import ControlItem from 'components/segmented-control/item';
 
-/**
- * Internal variables
- */
-let _instance = 1;
-
-/**
- * SegmentedControl
- */
-class SegmentedControl extends React.Component {
+export default class SegmentedControl extends React.Component {
 	static propTypes = {
 		initialSelected: PropTypes.string,
 		compact: PropTypes.bool,
@@ -43,27 +34,17 @@ class SegmentedControl extends React.Component {
 		compact: false,
 	};
 
+	items = [];
+
 	constructor( props ) {
 		super( props );
-		let initialSelected;
 
+		let selected;
 		if ( props.options ) {
-			initialSelected = props.initialSelected || props.options[ 0 ].value;
+			selected = props.initialSelected || props.options[ 0 ].value;
 		}
 
-		this.state = {
-			selected: initialSelected,
-			keyboardNavigation: false,
-		};
-	}
-
-	componentWillMount() {
-		this.id = _instance;
-		_instance++;
-	}
-
-	componentWillUnmount() {
-		window.removeEventListener( 'keydown', this.navigateItem );
+		this.state = { selected, keyboardNavigation: false };
 	}
 
 	render() {
@@ -74,59 +55,53 @@ class SegmentedControl extends React.Component {
 			'is-primary': this.props.primary,
 		};
 
-		if ( this.props.className ) {
-			this.props.className.split( ' ' ).forEach( function( className ) {
-				segmentedClasses[ className ] = true;
-			} );
-		}
-
 		return (
 			<ul
-				className={ classNames( segmentedClasses ) }
+				className={ classNames( segmentedClasses, this.props.className ) }
 				style={ this.props.style }
 				role="radiogroup"
 				onKeyDown={ this.navigateItem }
-				onKeyUp={ this.setKeyboardNavigation.bind( this, true ) }
+				onKeyUp={ this.getKeyboardNavigationHandler( true ) }
 			>
 				{ this.getSegmentedItems() }
 			</ul>
 		);
 	}
 
+	createChildRef = ( child, index ) => {
+		return ref => ( child.type === ControlItem ? ( this.items[ index ] = ref ) : null );
+	};
+
 	getSegmentedItems = () => {
-		let refIndex = 0;
 		if ( this.props.children ) {
+			let refIndex = 0;
 			// add keys and refs to children
 			return React.Children.map(
 				this.props.children,
 				function( child, index ) {
 					const newChild = React.cloneElement( child, {
-						ref: child.type === ControlItem ? 'item-' + refIndex : null,
-						key: 'item-' + index,
-						onClick: function( event ) {
-							this.setKeyboardNavigation( false );
-
-							if ( typeof child.props.onClick === 'function' ) {
-								child.props.onClick( event );
-							}
-						}.bind( this ),
+						ref: this.createChildRef( child, refIndex ),
+						key: index,
+						onClick: this.getKeyboardNavigationHandler(
+							false,
+							event => typeof child.props.onClick === 'function' && child.props.onClick( event )
+						),
 					} );
 
 					if ( child.type === ControlItem ) {
-						refIndex++;
+						refIndex += 1;
 					}
 
 					return newChild;
-				},
-				this
+				}.bind( this )
 			);
 		}
 
-		return this.props.options.map( function( item, index ) {
+		return this.props.options.map( ( item, index ) => {
 			return (
 				<ControlItem
 					key={ 'segmented-control-' + this.id + '-' + item.value }
-					ref={ 'item-' + index }
+					ref={ ref => ( this.items[ index ] = ref ) }
 					selected={ this.state.selected === item.value }
 					onClick={ this.selectItem.bind( this, item ) }
 					path={ item.path }
@@ -136,7 +111,7 @@ class SegmentedControl extends React.Component {
 					{ item.label }
 				</ControlItem>
 			);
-		}, this );
+		} );
 	};
 
 	selectItem = option => {
@@ -144,21 +119,15 @@ class SegmentedControl extends React.Component {
 			return;
 		}
 
-		if ( this.props.onSelect ) {
-			this.props.onSelect( option );
-		}
-
-		this.setState( {
-			selected: option.value,
-			keyboardNavigation: false,
-		} );
+		this.setState(
+			{ selected: option.value, keyboardNavigation: false },
+			() => this.props.onSelect && this.props.onSelect( option )
+		);
 	};
 
-	setKeyboardNavigation = value => {
-		this.setState( {
-			keyboardNavigation: value,
-		} );
-	};
+	getKeyboardNavigationHandler( keyboardNavigation, callback = noop ) {
+		return event => this.setState( { keyboardNavigation }, callback( event ) );
+	}
 
 	navigateItem = event => {
 		switch ( event.keyCode ) {
@@ -182,7 +151,7 @@ class SegmentedControl extends React.Component {
 	};
 
 	navigateItemByTabKey = event => {
-		let direction = event.shiftKey ? 'previous' : 'next',
+		const direction = event.shiftKey ? 'previous' : 'next',
 			newIndex = this.focusSibling( direction );
 
 		// allow tabbing out of control
@@ -197,27 +166,21 @@ class SegmentedControl extends React.Component {
 	 * @return {Number|Boolean} - returns false if the newIndex is out of bounds
 	 */
 	focusSibling = direction => {
-		let increment, items, newIndex;
-
-		if ( this.props.options ) {
-			items = filter( map( this.props.options, 'value' ), Boolean );
-		} else {
-			items = filter( this.props.children, function( item ) {
-				return item.type === ControlItem;
-			} );
-		}
+		const items = this.props.options
+			? filter( map( this.props.options, 'value' ), Boolean )
+			: filter( this.props.children, item => item.type === ControlItem );
 
 		if ( typeof this.focused !== 'number' ) {
 			this.focused = this.getCurrentFocusedIndex();
 		}
 
-		increment = direction === 'previous' ? -1 : 1;
-		newIndex = this.focused + increment;
+		const increment = direction === 'previous' ? -1 : 1;
+		const newIndex = this.focused + increment;
 		if ( newIndex >= items.length || newIndex < 0 ) {
 			return false;
 		}
 
-		ReactDom.findDOMNode( this.refs[ 'item-' + newIndex ].refs.itemLink ).focus();
+		this.items[ newIndex ].focusItemLink();
 		this.focused = newIndex;
 
 		return newIndex;
@@ -225,12 +188,10 @@ class SegmentedControl extends React.Component {
 
 	getCurrentFocusedIndex = () => {
 		// item is the <li> element containing the focused link
-		let activeItem = document.activeElement.parentNode,
+		const activeItem = document.activeElement.parentNode,
 			siblings = Array.prototype.slice( activeItem.parentNode.children ),
 			index = siblings.indexOf( activeItem );
 
 		return index > -1 ? index : 0;
 	};
 }
-
-export default SegmentedControl;
