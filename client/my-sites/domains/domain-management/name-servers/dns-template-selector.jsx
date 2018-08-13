@@ -9,7 +9,7 @@ import React from 'react';
 /**
  * Internal dependencies
  */
-import SegmentedControl from 'components/segmented-control';
+import SegmentedControlSimplified from 'components/segmented-control/simplified';
 
 class DnsTemplateSelector extends React.PureComponent {
 	handleOnSelect = option => {
@@ -20,7 +20,7 @@ class DnsTemplateSelector extends React.PureComponent {
 		const { templates } = this.props;
 
 		return (
-			<SegmentedControl
+			<SegmentedControlSimplified
 				primary={ true }
 				options={ templates.map( template => {
 					return {
