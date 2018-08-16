@@ -20,6 +20,7 @@ import { cancelImport, resetImport, startImport } from 'lib/importer/actions';
 import { connectDispatcher } from './dispatcher-converter';
 import SiteImporterLogo from './site-importer/logo';
 import { recordTracksEvent } from 'state/analytics/actions';
+import { selectImporterOption, deselectImporterOption } from 'state/ui/importers/actions';
 
 /**
  * Module variables
@@ -58,6 +59,7 @@ class ImporterHeader extends React.PureComponent {
 			tracksType = type.endsWith( 'site-importer' ) ? type + '-wix' : type;
 
 		if ( includes( [ ...cancelStates, ...stopStates ], importerState ) ) {
+			this.props.deselectImporterOption();
 			cancelImport( siteId, importerId );
 
 			this.props.recordTracksEvent( 'calypso_importer_main_cancel_clicked', {
@@ -65,6 +67,7 @@ class ImporterHeader extends React.PureComponent {
 				importer_id: tracksType,
 			} );
 		} else if ( includes( startStates, importerState ) ) {
+			this.props.selectImporterOption( type );
 			startImportFn( siteId, type );
 
 			this.props.recordTracksEvent( 'calypso_importer_main_start_clicked', {
@@ -72,6 +75,7 @@ class ImporterHeader extends React.PureComponent {
 				importer_id: tracksType,
 			} );
 		} else if ( includes( doneStates, importerState ) ) {
+			this.props.deselectImporterOption();
 			resetImport( siteId, importerId );
 
 			this.props.recordTracksEvent( 'calypso_importer_main_done_clicked', {
@@ -160,5 +164,9 @@ const mapDispatchToProps = dispatch => ( {
 
 export default connect(
 	null,
-	{ recordTracksEvent }
+	{
+		deselectImporterOption,
+		recordTracksEvent,
+		selectImporterOption,
+	}
 )( connectDispatcher( null, mapDispatchToProps )( localize( ImporterHeader ) ) );
