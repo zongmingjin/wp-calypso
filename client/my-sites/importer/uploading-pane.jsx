@@ -6,20 +6,22 @@
 
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
+import { connect } from 'react-redux';
 import React from 'react';
 import classNames from 'classnames';
-import { flowRight, includes, noop } from 'lodash';
+import { flow, flowRight, get, includes, noop } from 'lodash';
 import Gridicon from 'gridicons';
 
 /**
  * Internal dependencies
  */
-import { startMappingAuthors, startUpload } from 'lib/importer/actions';
+import { startMappingAuthors, startUpload, startFreshUpload } from 'lib/importer/actions';
 import { appStates } from 'state/imports/constants';
 import Button from 'components/forms/form-button';
 import DropZone from 'components/drop-zone';
 import ProgressBar from 'components/progress-bar';
 import { connectDispatcher } from './dispatcher-converter';
+import { getSelectedSite } from 'state/ui/selectors';
 
 class UploadingPane extends React.PureComponent {
 	static displayName = 'SiteSettingsUploadingPane';
@@ -111,9 +113,14 @@ class UploadingPane extends React.PureComponent {
 	};
 
 	startUpload = file => {
-		const { startUpload } = this.props;
+		const { startUpload, startFreshUpload } = this.props;
 
-		startUpload( this.props.importerStatus, file );
+		debugger;
+
+		console.log( this.props.importerStatus );
+
+		startFreshUpload( this.props.importerStatus, file );
+		// startUpload( this.props.importerStatus, file );
 	};
 
 	render() {
@@ -148,6 +155,16 @@ const mapDispatchToProps = dispatch => ( {
 		dispatch,
 		startUpload
 	),
+	startFreshUpload: flowRight(
+		dispatch,
+		startFreshUpload
+	),
 } );
 
-export default connectDispatcher( null, mapDispatchToProps )( localize( UploadingPane ) );
+export default flow(
+	connectDispatcher( null, mapDispatchToProps ),
+	connect( state => ( {
+		site: getSelectedSite( state ),
+	} ) ),
+	localize
+)( UploadingPane );

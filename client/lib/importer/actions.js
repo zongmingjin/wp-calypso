@@ -5,7 +5,7 @@
  */
 
 import Dispatcher from 'dispatcher';
-import { defer, flowRight, includes, partial } from 'lodash';
+import { defer, flowRight, get, includes, partial } from 'lodash';
 import wpLib from 'lib/wp';
 const wpcom = wpLib.undocumented();
 
@@ -214,11 +214,10 @@ export const startFreshUpload = ( { site, type }, file ) => dispatch => {
 	defer( () => {
 		wpcom
 			.uploadExportFile( siteId, {
-				importStatus: toApi( importerStatus ),
+				importStatus: { importerId },
 				file,
 
 				onprogress: event =>
-					console.log( event ) ||
 					dispatch(
 						setUploadProgress( importerId, {
 							uploadLoaded: event.loaded,
@@ -263,7 +262,6 @@ export const startUpload = ( importerStatus, file ) => dispatch => {
 			file,
 
 			onprogress: event =>
-				console.log( event ) ||
 				dispatch(
 					setUploadProgress( importerId, {
 						uploadLoaded: event.loaded,
