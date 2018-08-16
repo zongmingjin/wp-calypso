@@ -5,7 +5,7 @@
  */
 
 import Dispatcher from 'dispatcher';
-import { flowRight, includes, partial } from 'lodash';
+import { defer, flowRight, includes, partial } from 'lodash';
 import wpLib from 'lib/wp';
 const wpcom = wpLib.undocumented();
 
@@ -201,6 +201,56 @@ export function startImporting( importerStatus ) {
 	wpcom.updateImporter( siteId, importOrder( importerStatus ) );
 }
 
+export const startFreshUpload = ( { site, type }, file ) => dispatch => {
+	const siteId = get( site, 'ID' );
+
+	// create the startUpload action properties, including a generated importerId
+	const startImportAction = startImport( siteId, type );
+	// get that generated importerId
+	const { importerId } = startImportAction;
+	// dispatch that action
+	dispatch( startImportAction );
+
+	defer( () => {
+		wpcom
+			.uploadExportFile( siteId, {
+				importStatus: toApi( importerStatus ),
+				file,
+
+				onprogress: event =>
+					console.log( event ) ||
+					dispatch(
+						setUploadProgress( importerId, {
+							uploadLoaded: event.loaded,
+							uploadTotal: event.total,
+						} )
+					),
+
+				onabort: () => cancelImport( siteId, importerId ),
+			} )
+			.then( data => Object.assign( data, { siteId } ) )
+			.then( fromApi )
+			.then(
+				flowRight(
+					dispatch,
+					finishUpload( importerId )
+				)
+			)
+			.catch(
+				flowRight(
+					dispatch,
+					failUpload( importerId )
+				)
+			);
+
+		dispatch( {
+			type: IMPORTS_UPLOAD_START,
+			filename: file.name,
+			importerId,
+		} );
+	} );
+};
+
 export const startUpload = ( importerStatus, file ) => dispatch => {
 	const {
 		importerId,
@@ -213,6 +263,7 @@ export const startUpload = ( importerStatus, file ) => dispatch => {
 			file,
 
 			onprogress: event =>
+				console.log( event ) ||
 				dispatch(
 					setUploadProgress( importerId, {
 						uploadLoaded: event.loaded,
