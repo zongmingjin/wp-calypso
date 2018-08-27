@@ -15,6 +15,7 @@ import { flowRight } from 'lodash';
  * Internal dependencies
  */
 import Emojify from 'components/emojify';
+import afterLayoutFlush from 'lib/after-layout-flush';
 import PostSummary from '../stats-post-summary';
 import PostMonths from '../stats-detail-months';
 import PostWeeks from '../stats-detail-weeks';
@@ -69,7 +70,9 @@ class StatsPostDetail extends Component {
 	};
 
 	componentDidMount() {
-		window.scrollTo( 0, 0 );
+		afterLayoutFlush( () => {
+			window.scrollTo( 0, 0 );
+		} );
 	}
 
 	openPreview = () => {
