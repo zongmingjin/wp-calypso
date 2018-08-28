@@ -16,7 +16,7 @@
 		margin: 8px;
 
 		line-height: 0;
-		padding: 1px;
+		padding: 2px;
 		border-radius: 100%;
 		background: $blue-wordpress;
 		box-shadow: 0 2px 6px rgba( 0, 0, 0, 0.15 );
@@ -28,6 +28,11 @@
 			top: 0 !important; // forgive me father, for I have sinned!
 			height: 24px;
 			width: 24px;
+		}
+
+		&.button.is-borderless {
+			padding-left: 2px;
+			padding-right: 2px;
 		}
 
 		&.is-active {
