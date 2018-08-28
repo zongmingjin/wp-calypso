@@ -54,6 +54,7 @@ function bumpStat( group, name ) {
  */
 export function renderJsx( view, props ) {
 	const requireComponent = require.context( '../../client/document', true, /\.jsx$/ );
+	//
 	const component = requireComponent( './' + view + '.jsx' ).default;
 	const doctype = `<!DOCTYPE html><!--
 	<3

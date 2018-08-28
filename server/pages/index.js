@@ -230,8 +230,8 @@ function getDefaultContext( request ) {
 		env: calypsoEnv,
 		sanitize: sanitize,
 		isRTL: config( 'rtl' ),
-		isDebug,
-		badge: false,
+		isDebug, //
+		badge: false, //
 		lang,
 		entrypoint: getAssets().entrypoints.build.assets.filter(
 			asset => ! asset.startsWith( 'manifest' )
@@ -239,9 +239,9 @@ function getDefaultContext( request ) {
 		manifest: getAssets().manifests.manifest,
 		faviconURL: '//s1.wp.com/i/favicon.ico',
 		isFluidWidth: !! config.isEnabled( 'fluid-width' ),
-		abTestHelper: !! config.isEnabled( 'dev/test-helper' ),
-		preferencesHelper: !! config.isEnabled( 'dev/preferences-helper' ),
-		devDocsURL: '/devdocs',
+		abTestHelper: !! config.isEnabled( 'dev/test-helper' ), //
+		preferencesHelper: !! config.isEnabled( 'dev/preferences-helper' ), //
+		devDocsURL: '/devdocs', //
 		store: createReduxStore( initialServerState ),
 		bodyClasses,
 		sectionCss,
@@ -255,20 +255,20 @@ function getDefaultContext( request ) {
 	};
 
 	if ( calypsoEnv === 'wpcalypso' ) {
-		context.badge = calypsoEnv;
-		context.devDocs = true;
+		context.badge = calypsoEnv; //
+		context.devDocs = true; //
 		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
 		context.faviconURL = '/calypso/images/favicons/favicon-wpcalypso.ico';
 	}
 
 	if ( calypsoEnv === 'horizon' ) {
-		context.badge = 'feedback';
-		context.feedbackURL = 'https://horizonfeedback.wordpress.com/';
+		context.badge = 'feedback'; //
+		context.feedbackURL = 'https://horizonfeedback.wordpress.com/'; //
 		context.faviconURL = '/calypso/images/favicons/favicon-horizon.ico';
 	}
 
 	if ( calypsoEnv === 'stage' ) {
-		context.badge = 'staging';
+		context.badge = 'staging'; //
 		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
 		context.faviconURL = '/calypso/images/favicons/favicon-staging.ico';
 	}
@@ -276,10 +276,10 @@ function getDefaultContext( request ) {
 	if ( calypsoEnv === 'development' ) {
 		context.badge = 'dev';
 		context.devDocs = true;
-		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
+		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/'; //
 		context.faviconURL = '/calypso/images/favicons/favicon-development.ico';
-		context.branchName = getCurrentBranchName();
-		context.commitChecksum = getCurrentCommitShortChecksum();
+		context.branchName = getCurrentBranchName(); //
+		context.commitChecksum = getCurrentCommitShortChecksum(); //
 	}
 
 	return context;
