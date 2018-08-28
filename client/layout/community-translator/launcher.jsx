@@ -102,7 +102,13 @@ class TranslatorLauncher extends React.PureComponent {
 		const infoDialogButtons = [ { action: 'cancel', label: this.props.translate( 'Ok' ) } ];
 
 		return (
-			<div>
+			<div style={ {
+				position: 'relative',
+				height: '48px',
+			    width: '100%',
+			    display: 'block',
+			    overflowX: 'visible',
+			} } >
 				<Dialog
 					isVisible={ this.state.infoDialogVisible }
 					buttons={ infoDialogButtons }
