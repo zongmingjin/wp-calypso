@@ -113,6 +113,13 @@ export function generateFlows( { getSiteDestination = noop, getPostsDestination 
 			lastModified: '2018-01-24',
 		},
 
+		'user-first': {
+			steps: [ 'user', 'about', 'domains', 'plans' ],
+			destination: getSiteDestination,
+			description: 'To test a user first flow',
+			lastModified: '2018-08-28',
+		},
+
 		'delta-discover': {
 			steps: [ 'user' ],
 			destination: '/',
