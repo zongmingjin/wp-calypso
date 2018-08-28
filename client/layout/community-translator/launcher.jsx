@@ -86,8 +86,6 @@ class TranslatorLauncher extends React.PureComponent {
 		let launcherClasses = 'community-translator';
 		let toggleString;
 
-		console.log( 'launcher' )
-
 		if ( ! this.state.isEnabled ) {
 			return null;
 		}
@@ -102,13 +100,15 @@ class TranslatorLauncher extends React.PureComponent {
 		const infoDialogButtons = [ { action: 'cancel', label: this.props.translate( 'Ok' ) } ];
 
 		return (
-			<div style={ {
-				position: 'relative',
-				height: '48px',
-			    width: '100%',
-			    display: 'block',
-			    overflowX: 'visible',
-			} } >
+			<div
+				style={ {
+					position: 'relative',
+					height: '48px',
+					width: '100%',
+					display: 'block',
+					overflowX: 'visible',
+				} }
+			>
 				<Dialog
 					isVisible={ this.state.infoDialogVisible }
 					buttons={ infoDialogButtons }

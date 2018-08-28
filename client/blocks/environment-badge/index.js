@@ -2,9 +2,11 @@
 /**
  * External dependencies
  */
-import react from 'react';
+import React from 'react';
 import config from 'config';
 import Gridicon from 'gridicons';
+import { get } from 'lodash';
+// import { execSync } from 'child_process';
 
 /**
  * Internal dependencies
@@ -17,16 +19,74 @@ import EnvironmentBadge, {
 	PreferencesHelper,
 } from 'components/environment-badge';
 
-const EnvironmentBadge = ( {
-	abTestHelper,
-	badge,
-	branchName,
-	commitChecksum,
-	devDocs,
-	devDocsURL,
-	feedbackURL,
-	preferencesHelper,
-} ) => {
+// function getCurrentBranchName() {
+// 	try {
+// 		return execSync( 'git rev-parse --abbrev-ref HEAD' )
+// 			.toString()
+// 			.replace( /\s/gm, '' );
+// 	} catch ( err ) {
+// 		console.log( err.message );
+// 		return undefined;
+// 	}
+// }
+
+// function getCurrentCommitShortChecksum() {
+// 	try {
+// 		return execSync( 'git rev-parse --short HEAD' )
+// 			.toString()
+// 			.replace( /\s/gm, '' );
+// 	} catch ( err ) {
+// 		console.log( err.message );
+// 		return undefined;
+// 	}
+// }
+
+const getEnvironmentProps = env =>
+	get(
+		{
+			wpcalypso: {
+				badge: 'wpcalypso',
+				devDocs: true,
+				feedbackURL: 'https://github.com/Automattic/wp-calypso/issues/',
+				faviconURL: '/calypso/images/favicons/favicon-wpcalypso.ico',
+			},
+
+			horizon: {
+				badge: 'feedback',
+				feedbackURL: 'https://horizonfeedback.wordpress.com/',
+				faviconURL: '/calypso/images/favicons/favicon-horizon.ico',
+			},
+
+			stage: {
+				badge: 'staging',
+				feedbackURL: 'https://github.com/Automattic/wp-calypso/issues/',
+				faviconURL: '/calypso/images/favicons/favicon-staging.ico',
+			},
+
+			development: {
+				badge: 'dev',
+				devDocs: true,
+				feedbackURL: 'https://github.com/Automattic/wp-calypso/issues/',
+				faviconURL: '/calypso/images/favicons/favicon-development.ico',
+				// branchName: getCurrentBranchName(),
+				// commitChecksum: getCurrentCommitShortChecksum(),
+			},
+		},
+		env,
+		{}
+	);
+
+const devDocsURL = '/devdocs';
+
+const Badge = () => {
+	const calypsoEnv = config( 'env_id' );
+	const abTestHelper = config.isEnabled( 'dev/test-helper' );
+	const preferencesHelper = config.isEnabled( 'dev/preferences-helper' );
+
+	const { badge, branchName, commitChecksum, devDocs, feedbackURL } = getEnvironmentProps(
+		calypsoEnv
+	);
+
 	if ( ! badge ) {
 		return null;
 	}
@@ -66,3 +126,5 @@ const EnvironmentBadge = ( {
 		</div>
 	);
 };
+
+export default Badge;

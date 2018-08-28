@@ -19,10 +19,11 @@ export const SUPPORT_FORUM = 'SUPPORT_FORUM';
  * @return {String} One of the exported support variation constants listed above
  */
 export default function getSupportVariation( state ) {
-
-	console.log( config.isEnabled( 'happychat' ) );
-	console.log( isHappychatAvailable( state ) );
-	console.log( isHappychatUserEligible( state ) );
+	console.log( {
+		'config.isEnabled': config.isEnabled( 'happychat' ),
+		isHappychatAvailable: isHappychatAvailable( state ),
+		isHappychatUserEligible: isHappychatUserEligible( state ),
+	} );
 
 	if (
 		config.isEnabled( 'happychat' ) &&

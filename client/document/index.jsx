@@ -12,12 +12,6 @@ import { get } from 'lodash';
  * Internal dependencies
  */
 import Head from '../components/head';
-import EnvironmentBadge, {
-	TestHelper,
-	Branch,
-	DevDocsLink,
-	PreferencesHelper,
-} from '../components/environment-badge';
 import getStylesheet from './utils/stylesheet';
 import WordPressLogo from 'components/wordpress-logo';
 import { jsonStringifyForHtml } from '../../server/sanitize';
@@ -46,14 +40,6 @@ class Document extends React.Component {
 			sectionCss,
 			env,
 			isDebug,
-			badge,
-			abTestHelper,
-			preferencesHelper,
-			branchName,
-			commitChecksum,
-			devDocs,
-			devDocsURL,
-			feedbackURL,
 			inlineScriptNonce,
 		} = this.props;
 
@@ -131,16 +117,6 @@ class Document extends React.Component {
 								</div>
 							</div>
 						</div>
-					) }
-					{ badge && (
-						<EnvironmentBadge badge={ badge } feedbackURL={ feedbackURL }>
-							{ preferencesHelper && <PreferencesHelper /> }
-							{ abTestHelper && <TestHelper /> }
-							{ branchName && (
-								<Branch branchName={ branchName } commitChecksum={ commitChecksum } />
-							) }
-							{ devDocs && <DevDocsLink url={ devDocsURL } /> }
-						</EnvironmentBadge>
 					) }
 
 					<script
