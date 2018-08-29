@@ -65,6 +65,7 @@ class Document extends React.Component {
 					{ head.links.map( ( props, index ) => (
 						<link { ...props } key={ index } />
 					) ) }
+					<meta name="eggs" content="scrambled" />
 
 					<link
 						rel="stylesheet"
