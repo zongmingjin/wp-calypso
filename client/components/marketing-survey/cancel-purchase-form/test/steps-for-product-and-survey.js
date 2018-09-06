@@ -34,6 +34,20 @@ describe( 'stepsForProductAndSurvey', () => {
 		const survey = { questionOneRadio: 'tooHard' };
 		const precancellationChatToggle = true;
 
+		test( 'should not include happychat step if product is blogger plan and happychat is not available', () => {
+			const product = { product_slug: plans.PLAN_BLOGGER };
+			expect(
+				stepsForProductAndSurvey( survey, product, false, precancellationChatToggle )
+			).to.deep.equal( DEFAULT_STEPS );
+		} );
+
+		test( 'should not include happychat step if product is blogger plan and happychat is not available (2y)', () => {
+			const product = { product_slug: plans.PLAN_BLOGGER_2_YEARS };
+			expect(
+				stepsForProductAndSurvey( survey, product, false, precancellationChatToggle )
+			).to.deep.equal( DEFAULT_STEPS );
+		} );
+
 		test( 'should include happychat step if product is personal plan and happychat is available', () => {
 			const product = { product_slug: plans.PLAN_PERSONAL };
 			expect(
@@ -168,6 +182,22 @@ describe( 'stepsForProductAndSurvey', () => {
 
 	describe( 'question one answer is "could not install"', () => {
 		const survey = { questionOneRadio: 'couldNotInstall' };
+
+		test( 'should include AT upgrade step if product is blogger plan and abtest variant is show', () => {
+			const product = { product_slug: plans.PLAN_BLOGGER };
+			abtest.withArgs( 'ATUpgradeOnCancel' ).returns( 'show' );
+			expect( stepsForProductAndSurvey( survey, product, true ) ).to.deep.equal(
+				DEFAULT_STEPS_WITH_UPGRADE_AT_STEP
+			);
+		} );
+
+		test( 'should include AT upgrade step if product is blogger plan and abtest variant is show (2y)', () => {
+			const product = { product_slug: plans.PLAN_BLOGGER_2_YEARS };
+			abtest.withArgs( 'ATUpgradeOnCancel' ).returns( 'show' );
+			expect( stepsForProductAndSurvey( survey, product, true ) ).to.deep.equal(
+				DEFAULT_STEPS_WITH_UPGRADE_AT_STEP
+			);
+		} );
 
 		test( 'should include AT upgrade step if product is personal plan and abtest variant is show', () => {
 			const product = { product_slug: plans.PLAN_PERSONAL };

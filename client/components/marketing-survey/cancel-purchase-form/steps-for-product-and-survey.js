@@ -7,6 +7,7 @@
 import {
 	GROUP_WPCOM,
 	GROUP_JETPACK,
+	TYPE_BLOGGER,
 	TYPE_PERSONAL,
 	TYPE_PREMIUM,
 	TYPE_BUSINESS,
@@ -18,6 +19,7 @@ import * as steps from './steps';
 
 const BUSINESS_PLANS = findPlansKeys( { group: GROUP_WPCOM, type: TYPE_BUSINESS } );
 const PERSONAL_PREMIUM_PLANS = []
+	.concat( findPlansKeys( { group: GROUP_WPCOM, type: TYPE_BLOGGER } ) )
 	.concat( findPlansKeys( { group: GROUP_WPCOM, type: TYPE_PERSONAL } ) )
 	.concat( findPlansKeys( { group: GROUP_WPCOM, type: TYPE_PREMIUM } ) );
 
