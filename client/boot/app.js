@@ -39,9 +39,5 @@ const boot = currentUser => {
 
 window.AppBoot = () => {
 	const user = userFactory();
-	if ( user.initialized ) {
-		boot( user );
-	} else {
-		user.once( 'change', () => boot( user ) );
-	}
+	boot( user );
 };
