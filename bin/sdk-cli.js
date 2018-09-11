@@ -81,13 +81,13 @@ yargs
 					description: 'Entry for editor-side JavaScript file',
 					type: 'string',
 					required: true,
-					coerce: value => path.resolve( __dirname, '../', value ),
+					coerce: path.resolve,
 					requiresArg: true,
 				},
 				'view-script': {
 					description: 'Entry for rendered-page-side JavaScript file',
 					type: 'string',
-					coerce: value => path.resolve( __dirname, '../', value ),
+					coerce: path.resolve,
 					requiresArg: true,
 				},
 				'output-dir': {
