@@ -19,8 +19,7 @@ const notifications = require( './sdk/notifications.js' );
 // pick between `npm run calypso-sdk` and `npx calypso-sdk`.
 // Show also how npm scripts require delimiter to pass arguments.
 const calleeScript = path.basename( process.argv[ 1 ] );
-const scriptName =
-	calleeScript === path.basename( __filename ) ? 'npm run sdk' : calleeScript;
+const scriptName = calleeScript === path.basename( __filename ) ? 'npm run sdk' : calleeScript;
 const delimit = scriptName.substring( 0, 3 ) === 'npm' ? '-- ' : '';
 const calypsoRoot = path.resolve( __dirname, '..' );
 
@@ -29,9 +28,7 @@ const getBaseConfig = ( options = {} ) => {
 	const config = getConfig( options );
 
 	// these are currently Calypso-specific
-	const omitPlugins = [
-		webpack.HotModuleReplacementPlugin,
-	];
+	const omitPlugins = [ webpack.HotModuleReplacementPlugin ];
 
 	return {
 		...config,
