@@ -6,6 +6,8 @@ export const addCreditCard = purchasesRoot + '/add-credit-card';
 
 export const billingHistory = purchasesRoot + '/billing';
 
+export const pendingPurchases = purchasesRoot + '/pending';
+
 export function billingHistoryReceipt( receiptId ) {
 	if ( process.env.NODE_ENV !== 'production' ) {
 		if ( 'undefined' === typeof receiptId ) {
@@ -13,6 +15,17 @@ export function billingHistoryReceipt( receiptId ) {
 		}
 	}
 	return billingHistory + `/${ receiptId }`;
+}
+
+// todo: is a pending order id the samething as a purchase id?
+export function managePending( orderId ) {
+	if ( process.env.NODE_ENV !== 'production' ) {
+		if ( 'undefined' === typeof orderId ) {
+			throw new Error( 'orderId must be provided' );
+		}
+	}
+
+	return `${ pendingPurchases }/${ orderId }`;
 }
 
 export function managePurchase( siteName, purchaseId ) {

@@ -1,4 +1,5 @@
 /** @format */
+
 /**
  * Any new action type should be added to the set of exports below, with the
  * value mirroring its exported name.
@@ -8,6 +9,7 @@
  * Unsure how to name an action type? Refer to our guidelines:
  *  - https://wpcalypso.wordpress.com/devdocs/docs/our-approach-to-data.md#actions
  */
+
 export const ACCOUNT_CLOSE = 'ACCOUNT_CLOSE';
 export const ACCOUNT_CLOSE_SUCCESS = 'ACCOUNT_CLOSE_SUCCESS';
 export const ACCOUNT_RECOVERY_RESET_OPTIONS_ERROR = 'ACCOUNT_RECOVERY_RESET_OPTIONS_ERROR';
