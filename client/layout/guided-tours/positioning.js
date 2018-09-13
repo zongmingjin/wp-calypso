@@ -164,11 +164,17 @@ export function getScrollableSidebar() {
 function validatePlacement( placement, target ) {
 	const targetSlug = target && target.dataset && target.dataset.tipTarget;
 
-	if ( targetSlug === 'sidebar' && isMobile() ) {
-		return 'middle';
+	if ( isMobile() ) {
+		if ( targetSlug === 'sidebar' ) {
+			return 'middle';
+		}
+
+		if ( target && placement !== 'center' ) {
+			return 'below';
+		}
 	}
 
-	return target && placement !== 'center' && isMobile() ? 'below' : placement;
+	return placement;
 }
 
 function scrollIntoView( target, scrollContainer ) {
