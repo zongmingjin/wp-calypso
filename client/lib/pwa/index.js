@@ -31,7 +31,8 @@ export function init() {
 
 	// delay prompt to install the app
 	window.addEventListener( 'beforeinstallprompt', event => {
-		// Prevent Chrome 67 and earlier from automatically showing the prompt
+		// Prevent Chrome 67 and earlier from automatically showing the A2HS banner
+		// A mini-bar may still be shown, see https://developers.google.com/web/updates/2018/06/a2hs-updates
 		event.preventDefault();
 		deferredPrompt = event;
 	} );
