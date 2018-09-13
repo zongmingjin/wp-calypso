@@ -9,13 +9,16 @@ import { translate } from 'i18n-calypso';
  * Internal Dependencies
  */
 import { RESULT_TOUR, RESULT_VIDEO } from './constants';
+import { getSupportSiteLocale } from 'lib/i18n-utils';
+
+const supportLocale = getSupportSiteLocale();
 
 /**
  * Module variables
  */
 const fallbackLinks = [
 	{
-		link: 'https://en.support.wordpress.com/do-i-need-a-website-a-blog-or-a-website-with-a-blog/',
+		link: `https://${ supportLocale }.support.wordpress.com/do-i-need-a-website-a-blog-or-a-website-with-a-blog/`,
 		post_id: 143180,
 		title: translate( 'Do I Need a Website, a Blog, or a Website with a Blog?' ),
 		description: translate(
@@ -23,7 +26,7 @@ const fallbackLinks = [
 		),
 	},
 	{
-		link: 'https://en.support.wordpress.com/business-plan/',
+		link: `https://${ supportLocale }.support.wordpress.com/business-plan/`,
 		post_id: 134940,
 		title: translate( 'Uploading custom plugins and themes' ),
 		description: translate(
@@ -31,7 +34,7 @@ const fallbackLinks = [
 		),
 	},
 	{
-		link: 'https://en.support.wordpress.com/all-about-domains/',
+		link: `https://${ supportLocale }.support.wordpress.com/all-about-domains/`,
 		post_id: 41171,
 		title: translate( 'All About Domains' ),
 		description: translate(
@@ -39,7 +42,7 @@ const fallbackLinks = [
 		),
 	},
 	{
-		link: 'https://en.support.wordpress.com/start/',
+		link: `https://${ supportLocale }.support.wordpress.com/start/`,
 		post_id: 81083,
 		title: translate( 'Quick-Start Guide' ),
 		description: translate(
@@ -47,7 +50,7 @@ const fallbackLinks = [
 		),
 	},
 	{
-		link: 'https://en.support.wordpress.com/settings/privacy-settings/',
+		link: `https://${ supportLocale }.support.wordpress.com/settings/privacy-settings/`,
 		post_id: 1507,
 		title: translate( 'Privacy Settings' ),
 		description: translate( 'Limit your site’s visibility or make it completely private.' ),
@@ -57,7 +60,7 @@ const fallbackLinks = [
 const contextLinksForSection = {
 	stats: [
 		{
-			link: 'http://en.support.wordpress.com/stats/',
+			link: `https://${ supportLocale }.support.wordpress.com/stats/`,
 			post_id: 4454,
 			title: translate( 'Understanding the Stats Page' ),
 			description: translate(
@@ -66,7 +69,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'https://en.support.wordpress.com/getting-more-views-and-traffic/',
+			link: `https://${ supportLocale }.support.wordpress.com/getting-more-views-and-traffic/`,
 			post_id: 3307,
 			title: translate( 'Getting More Views and Traffic' ),
 			description: translate(
@@ -74,7 +77,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'https://en.support.wordpress.com/increase-your-site-traffic/',
+			link: `https://${ supportLocale }.support.wordpress.com/increase-your-site-traffic/`,
 			post_id: 132186,
 			title: translate( 'Increase Your Site Traffic' ),
 			description: translate(
@@ -83,7 +86,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'https://en.support.wordpress.com/grow-your-community/',
+			link: `https://${ supportLocale }.support.wordpress.com/grow-your-community/`,
 			post_id: 132190,
 			title: translate( 'Grow Your Community' ),
 			description: translate(
@@ -93,7 +96,7 @@ const contextLinksForSection = {
 	],
 	sharing: [
 		{
-			link: 'http://en.support.wordpress.com/video-tutorials/connect-to-social-media/',
+			link: `https://${ supportLocale }.support.wordpress.com/video-tutorials/connect-to-social-media/`,
 			post_id: 130825,
 			title: translate( 'Integrate and Connect to Social Media' ),
 			description: translate(
@@ -102,7 +105,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'https://en.support.wordpress.com/sharing/',
+			link: `https://${ supportLocale }.support.wordpress.com/sharing/`,
 			post_id: 7499,
 			title: translate( 'Sharing Your Content' ),
 			description: translate(
@@ -111,7 +114,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'https://en.support.wordpress.com/instagram/',
+			link: `https://${ supportLocale }.support.wordpress.com/instagram/`,
 			post_id: 77589,
 			title: translate( 'Using Instagram' ),
 			description: translate(
@@ -120,7 +123,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'https://en.support.wordpress.com/twitter/',
+			link: `https://${ supportLocale }.support.wordpress.com/twitter/`,
 			post_id: 124,
 			title: translate( 'Using Twitter' ),
 			description: translate(
@@ -131,7 +134,7 @@ const contextLinksForSection = {
 	],
 	me: [
 		{
-			link: 'http://en.support.wordpress.com/manage-my-profile/',
+			link: `https://${ supportLocale }.support.wordpress.com/manage-my-profile/`,
 			post_id: 19775,
 			title: translate( 'Managing Your Profile' ),
 			description: translate(
@@ -140,7 +143,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/gravatars/',
+			link: `https://${ supportLocale }.support.wordpress.com/gravatars/`,
 			post_id: 1338,
 			title: translate( 'Your Profile Picture' ),
 			description: translate(
@@ -149,13 +152,13 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/account-deactivation/',
+			link: `https://${ supportLocale }.support.wordpress.com/account-deactivation/`,
 			post_id: 138080,
 			title: translate( 'Account Closure' ),
 			description: translate( 'Need a fresh start? Learn how to close your account.' ),
 		},
 		{
-			link: 'http://en.support.wordpress.com/change-your-username/',
+			link: `https://${ supportLocale }.support.wordpress.com/change-your-username/`,
 			post_id: 2116,
 			title: translate( 'Change Your Username' ),
 			description: translate(
@@ -166,7 +169,7 @@ const contextLinksForSection = {
 	],
 	account: [
 		{
-			link: 'http://en.support.wordpress.com/change-your-username/',
+			link: `https://${ supportLocale }.support.wordpress.com/change-your-username/`,
 			title: translate( 'Change Your Username' ),
 			description: translate(
 				'You can change both your WordPress.com account username (the name you use to login) ' +
@@ -174,7 +177,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/video-tutorials/manage-your-account/',
+			link: `https://${ supportLocale }.support.wordpress.com/video-tutorials/manage-your-account/`,
 			post_id: 130826,
 			title: translate( 'Manage Your Account' ),
 			description: translate(
@@ -182,7 +185,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/account-settings/',
+			link: `https://${ supportLocale }.support.wordpress.com/account-settings/`,
 			post_id: 80368,
 			title: translate( 'Account Settings' ),
 			description: translate(
@@ -190,7 +193,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/account-deactivation/',
+			link: `https://${ supportLocale }.support.wordpress.com/account-deactivation/`,
 			title: translate( 'Account Deactivation' ),
 			description: translate(
 				'Finished with your WordPress.com account? Would you like to shut it down?'
@@ -199,7 +202,7 @@ const contextLinksForSection = {
 	],
 	security: [
 		{
-			link: 'http://en.support.wordpress.com/security/two-step-authentication/',
+			link: `https://${ supportLocale }.support.wordpress.com/security/two-step-authentication/`,
 			post_id: 58847,
 			title: translate( 'Two-Step Authentication' ),
 			description: translate(
@@ -208,7 +211,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/account-recovery/',
+			link: `https://${ supportLocale }.support.wordpress.com/account-recovery/`,
 			post_id: 46365,
 			title: translate( 'Account Recovery' ),
 			description: translate(
@@ -216,7 +219,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/passwords/',
+			link: `https://${ supportLocale }.support.wordpress.com/passwords/`,
 			post_id: 89,
 			title: translate( 'Passwords And How To Use Them' ),
 			description: translate(
@@ -224,7 +227,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/third-party-applications/',
+			link: `https://${ supportLocale }.support.wordpress.com/third-party-applications/`,
 			post_id: 17288,
 			title: translate( 'Third Party Applications' ),
 			description: translate(
@@ -235,7 +238,7 @@ const contextLinksForSection = {
 	],
 	purchases: [
 		{
-			link: 'http://en.support.wordpress.com/manage-purchases/',
+			link: `https://${ supportLocale }.support.wordpress.com/manage-purchases/`,
 			post_id: 111349,
 			title: translate( 'Manage Purchases' ),
 			description: translate(
@@ -243,7 +246,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/auto-renewal/',
+			link: `https://${ supportLocale }.support.wordpress.com/auto-renewal/`,
 			post_id: 110924,
 			title: translate( 'Subscriptions for Plans and Domains' ),
 			description: translate(
@@ -252,7 +255,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/discover-the-wordpress-com-plans/',
+			link: `https://${ supportLocale }.support.wordpress.com/discover-the-wordpress-com-plans/`,
 			post_id: 140323,
 			title: translate( 'Explore the WordPress.com Plans' ),
 			description: translate(
@@ -262,7 +265,7 @@ const contextLinksForSection = {
 	],
 	'notification-settings': [
 		{
-			link: 'http://en.support.wordpress.com/notifications/',
+			link: `https://${ supportLocale }.support.wordpress.com/notifications/`,
 			title: translate( 'Notifications' ),
 			description: translate(
 				'Notifications help you stay on top of the activity on your site and all the things happening on ' +
@@ -270,7 +273,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/email-notifications/',
+			link: `https://${ supportLocale }.support.wordpress.com/email-notifications/`,
 			post_id: 9443,
 			title: translate( 'Email Notifications' ),
 			description: translate(
@@ -278,7 +281,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/following-comments/',
+			link: `https://${ supportLocale }.support.wordpress.com/following-comments/`,
 			post_id: 4576,
 			title: translate( 'Following Comments' ),
 			description: translate(
@@ -287,7 +290,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/following/',
+			link: `https://${ supportLocale }.support.wordpress.com/following/`,
 			post_id: 4899,
 			title: translate( 'Following Blogs' ),
 			description: translate(
@@ -297,7 +300,7 @@ const contextLinksForSection = {
 	],
 	media: [
 		{
-			link: 'http://en.support.wordpress.com/media/',
+			link: `https://${ supportLocale }.support.wordpress.com/media/`,
 			post_id: 853,
 			title: translate( 'The Media Library' ),
 			description: translate(
@@ -305,7 +308,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/add-media/finding-free-images-and-other-media/',
+			link: `https://${ supportLocale }.support.wordpress.com/add-media/finding-free-images-and-other-media/`,
 			post_id: 78425,
 			title: translate( 'Finding Free Images and other Media' ),
 			description: translate(
@@ -313,7 +316,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/add-media/',
+			link: `https://${ supportLocale }.support.wordpress.com/add-media/`,
 			post_id: 38830,
 			title: translate( 'Add Media' ),
 			description: translate(
@@ -322,7 +325,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/videos/',
+			link: `https://${ supportLocale }.support.wordpress.com/videos/`,
 			post_id: 4744,
 			title: translate( 'Including Videos' ),
 			description: translate(
@@ -332,14 +335,14 @@ const contextLinksForSection = {
 	],
 	people: [
 		{
-			link: 'http://en.support.wordpress.com/user-roles/',
+			link: `https://${ supportLocale }.support.wordpress.com/user-roles/`,
 			title: translate( 'User Roles' ),
 			description: translate(
 				'User roles determine the access level or permissions of a person authorized to use a WordPress.com site.'
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/user-mentions/',
+			link: `https://${ supportLocale }.support.wordpress.com/user-mentions/`,
 			post_id: 91788,
 			title: translate( 'User Mentions' ),
 			description: translate(
@@ -348,7 +351,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/adding-users/',
+			link: `https://${ supportLocale }.support.wordpress.com/adding-users/`,
 			post_id: 2160,
 			title: translate( 'Inviting Contributors, Followers, and Viewers' ),
 			description: translate(
@@ -356,7 +359,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/followers/',
+			link: `https://${ supportLocale }.support.wordpress.com/followers/`,
 			post_id: 5444,
 			title: translate( 'Your Followers' ),
 			description: translate(
@@ -367,7 +370,7 @@ const contextLinksForSection = {
 	],
 	plugins: [
 		{
-			link: 'http://en.support.wordpress.com/plugins/',
+			link: `https://${ supportLocale }.support.wordpress.com/plugins/`,
 			post_id: 2108,
 			title: translate( 'Using Plugins' ),
 			description: translate(
@@ -377,7 +380,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/plugins/managing-plugins/',
+			link: `https://${ supportLocale }.support.wordpress.com/plugins/managing-plugins/`,
 			post_id: 134818,
 			title: translate( 'Managing plugins' ),
 			description: translate(
@@ -385,7 +388,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/plugins/adding-plugins/',
+			link: `https://${ supportLocale }.support.wordpress.com/plugins/adding-plugins/`,
 			post_id: 134719,
 			title: translate( 'Adding Plugins' ),
 			description: translate(
@@ -394,7 +397,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/business-plan/',
+			link: `https://${ supportLocale }.support.wordpress.com/business-plan/`,
 			title: translate( 'Business Plan' ),
 			description: translate(
 				"When you want to build a one-of-a-kind website, it's time for WordPress.com Business: " +
@@ -404,7 +407,7 @@ const contextLinksForSection = {
 	],
 	'posts-pages': [
 		{
-			link: 'https://en.support.wordpress.com/do-i-need-a-website-a-blog-or-a-website-with-a-blog/',
+			link: `https://${ supportLocale }.support.wordpress.com/do-i-need-a-website-a-blog-or-a-website-with-a-blog/`,
 			post_id: 143180,
 			title: translate( 'Do I Need a Website, a Blog, or a Website with a Blog?' ),
 			description: translate(
@@ -412,7 +415,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/five-step-website-setup/',
+			link: `https://${ supportLocale }.support.wordpress.com/five-step-website-setup/`,
 			post_id: 100856,
 			title: translate( 'Build Your Website in Five Steps' ),
 			description: translate(
@@ -422,7 +425,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/pages/landing-pages/',
+			link: `https://${ supportLocale }.support.wordpress.com/pages/landing-pages/`,
 			post_id: 124077,
 			title: translate( 'Landing Pages' ),
 			description: translate(
@@ -431,7 +434,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/posts/',
+			link: `https://${ supportLocale }.support.wordpress.com/posts/`,
 			post_id: 84,
 			title: translate( 'About Blog Posts' ),
 			description: translate(
@@ -439,7 +442,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/posts/post-formats/',
+			link: `https://${ supportLocale }.support.wordpress.com/posts/post-formats/`,
 			post_id: 10382,
 			title: translate( 'Post Formats' ),
 			description: translate(
@@ -449,7 +452,7 @@ const contextLinksForSection = {
 	],
 	'settings-writing': [
 		{
-			link: 'http://en.support.wordpress.com/settings/writing-settings/',
+			link: `https://${ supportLocale }.support.wordpress.com/settings/writing-settings/`,
 			post_id: 1502,
 			title: translate( 'Writing Settings' ),
 			description: translate(
@@ -457,13 +460,13 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/posts/categories-vs-tags/',
+			link: `https://${ supportLocale }.support.wordpress.com/posts/categories-vs-tags/`,
 			post_id: 2135,
 			title: translate( 'Categories vs. Tags' ),
 			description: translate( 'Learn the differences between categories and tags.' ),
 		},
 		{
-			link: 'http://en.support.wordpress.com/feeds/',
+			link: `https://${ supportLocale }.support.wordpress.com/feeds/`,
 			post_id: 3589,
 			title: translate( 'Feeds' ),
 			description: translate(
@@ -471,7 +474,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/portfolios/',
+			link: `https://${ supportLocale }.support.wordpress.com/portfolios/`,
 			post_id: 84808,
 			title: translate( 'Portfolios' ),
 			description: translate(
@@ -482,7 +485,7 @@ const contextLinksForSection = {
 	],
 	'settings-discussion': [
 		{
-			link: 'http://en.support.wordpress.com/settings/discussion-settings/',
+			link: `https://${ supportLocale }.support.wordpress.com/settings/discussion-settings/`,
 			post_id: 1504,
 			title: translate( 'Discussion Settings' ),
 			description: translate(
@@ -490,7 +493,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/enable-disable-comments-for-future-posts/',
+			link: `https://${ supportLocale }.support.wordpress.com/enable-disable-comments-for-future-posts/`,
 			post_id: 5997,
 			title: translate( 'Enable and Disable Comments for Future Posts' ),
 			description: translate(
@@ -498,7 +501,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/comments/',
+			link: `https://${ supportLocale }.support.wordpress.com/comments/`,
 			post_id: 113,
 			title: translate( 'Comments' ),
 			description: translate(
@@ -506,7 +509,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/subscriptions-and-newsletters/',
+			link: `https://${ supportLocale }.support.wordpress.com/subscriptions-and-newsletters/`,
 			post_id: 67810,
 			title: translate( 'Subscriptions and Newsletters' ),
 			description: translate(
@@ -516,14 +519,14 @@ const contextLinksForSection = {
 	],
 	'settings-traffic': [
 		{
-			link: 'http://en.support.wordpress.com/getting-more-views-and-traffic/',
+			link: `https://${ supportLocale }.support.wordpress.com/getting-more-views-and-traffic/`,
 			title: translate( 'Get More Views and Traffic' ),
 			description: translate(
 				'Want more traffic? Here are some tips for attracting more visitors to your site!'
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/related-posts/',
+			link: `https://${ supportLocale }.support.wordpress.com/related-posts/`,
 			post_id: 1545,
 			title: translate( 'Related Posts' ),
 			description: translate(
@@ -531,7 +534,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/webmaster-tools/',
+			link: `https://${ supportLocale }.support.wordpress.com/webmaster-tools/`,
 			post_id: 5022,
 			title: translate( 'Webmaster Tools' ),
 			description: translate(
@@ -539,7 +542,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/amp-accelerated-mobile-pages/',
+			link: `https://${ supportLocale }.support.wordpress.com/amp-accelerated-mobile-pages/`,
 			post_id: 122516,
 			title: translate( 'Accelerated Mobile Pages (AMP)' ),
 			description: translate(
@@ -550,7 +553,7 @@ const contextLinksForSection = {
 	],
 	'settings-security': [
 		{
-			link: 'http://en.support.wordpress.com/security/',
+			link: `https://${ supportLocale }.support.wordpress.com/security/`,
 			post_id: 10977,
 			title: translate( 'Security' ),
 			description: translate(
@@ -559,7 +562,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/unwanted-comments/',
+			link: `https://${ supportLocale }.support.wordpress.com/unwanted-comments/`,
 			post_id: 5882,
 			title: translate( 'Unwanted Comments and Comment Spam' ),
 			description: translate(
@@ -567,7 +570,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/selecting-a-strong-password/',
+			link: `https://${ supportLocale }.support.wordpress.com/selecting-a-strong-password/`,
 			post_id: 35364,
 			title: translate( 'Selecting A Strong Password' ),
 			description: translate(
@@ -577,7 +580,7 @@ const contextLinksForSection = {
 	],
 	settings: [
 		{
-			link: 'http://en.support.wordpress.com/settings/',
+			link: `https://${ supportLocale }.support.wordpress.com/settings/`,
 			post_id: 497,
 			title: translate( 'Settings' ),
 			description: translate(
@@ -585,7 +588,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/settings/general-settings/',
+			link: `https://${ supportLocale }.support.wordpress.com/settings/general-settings/`,
 			post_id: 1501,
 			title: translate( 'General Settings' ),
 			description: translate(
@@ -594,7 +597,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/site-icons/',
+			link: `https://${ supportLocale }.support.wordpress.com/site-icons/`,
 			post_id: 1327,
 			title: translate( 'Site Icons' ),
 			description: translate(
@@ -603,7 +606,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/five-step-blog-setup/',
+			link: `https://${ supportLocale }.support.wordpress.com/five-step-blog-setup/`,
 			post_id: 100846,
 			title: translate( 'Five Steps to Your Great New Blog' ),
 			description: translate(
@@ -613,7 +616,7 @@ const contextLinksForSection = {
 	],
 	themes: [
 		{
-			link: 'http://en.support.wordpress.com/themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/themes/`,
 			post_id: 2278,
 			title: translate( 'Themes: An Overview' ),
 			description: translate(
@@ -622,7 +625,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/themes/mobile-themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/themes/mobile-themes/`,
 			post_id: 4925,
 			title: translate( 'Mobile Themes' ),
 			description: translate(
@@ -631,7 +634,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/premium-themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/premium-themes/`,
 			post_id: 12112,
 			title: translate( 'Premium Themes' ),
 			description: translate(
@@ -640,8 +643,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link:
-				'http://en.support.wordpress.com/themes/uploading-setting-up-custom-themes/child-themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/themes/uploading-setting-up-custom-themes/child-themes/`,
 			title: translate( 'Child Themes' ),
 			description: translate(
 				"The only limit on your site is your vision — if the themes you see don't match that, it's " +
@@ -651,7 +653,7 @@ const contextLinksForSection = {
 	],
 	theme: [
 		{
-			link: 'http://en.support.wordpress.com/themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/themes/`,
 			title: translate( 'Themes: An Overview' ),
 			description: translate(
 				'A theme controls the general look and feel of your site including things like ' +
@@ -659,7 +661,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/themes/mobile-themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/themes/mobile-themes/`,
 			title: translate( 'Mobile Themes' ),
 			description: translate(
 				'When a visitor browses to a WordPress.com site on a mobile device, we show ' +
@@ -667,7 +669,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/premium-themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/premium-themes/`,
 			title: translate( 'Premium Themes' ),
 			description: translate(
 				'On a site with the Premium or Business plan, you can switch to any premium theme at ' +
@@ -675,8 +677,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link:
-				'http://en.support.wordpress.com/themes/uploading-setting-up-custom-themes/child-themes/',
+			link: `https://${ supportLocale }.support.wordpress.com/themes/uploading-setting-up-custom-themes/child-themes/`,
 			title: translate( 'Child Themes' ),
 			description: translate(
 				"The only limit on your site is your vision — if the themes you see don't match that, it's " +
@@ -686,14 +687,14 @@ const contextLinksForSection = {
 	],
 	plans: [
 		{
-			link: 'http://en.support.wordpress.com/discover-the-wordpress-com-plans/',
+			link: `https://${ supportLocale }.support.wordpress.com/discover-the-wordpress-com-plans/`,
 			title: translate( 'Explore the WordPress.com Plans' ),
 			description: translate(
 				"Upgrading your plan unlocks a ton of features! We'll help you pick the best fit for your needs and goals."
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/plan-features/',
+			link: `https://${ supportLocale }.support.wordpress.com/plan-features/`,
 			post_id: 134698,
 			title: translate( 'WordPress.com Plans' ),
 			description: translate(
@@ -701,7 +702,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/auto-renewal/',
+			link: `https://${ supportLocale }.support.wordpress.com/auto-renewal/`,
 			title: translate( 'Subscriptions for Plans and Domains' ),
 			description: translate(
 				'Your WordPress.com plans and any domains you add to your sites are based on a yearly ' +
@@ -709,7 +710,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/jetpack-add-ons/',
+			link: `https://${ supportLocale }.support.wordpress.com/jetpack-add-ons/`,
 			post_id: 115025,
 			title: translate( 'Jetpack Plans' ),
 			description: translate(
@@ -719,7 +720,7 @@ const contextLinksForSection = {
 	],
 	'post-editor': [
 		{
-			link: 'http://en.support.wordpress.com/editors/',
+			link: `https://${ supportLocale }.support.wordpress.com/editors/`,
 			post_id: 3347,
 			title: translate( 'The Visual Editor and the HTML Editor' ),
 			description: translate(
@@ -728,7 +729,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/visual-editor/',
+			link: `https://${ supportLocale }.support.wordpress.com/visual-editor/`,
 			post_id: 3644,
 			title: translate( 'The Visual Editor' ),
 			description: translate(
@@ -737,7 +738,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/xml-rpc/',
+			link: `https://${ supportLocale }.support.wordpress.com/xml-rpc/`,
 			post_id: 3595,
 			title: translate( 'Offline Editing' ),
 			description: translate(
@@ -745,7 +746,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/adding-users/',
+			link: `https://${ supportLocale }.support.wordpress.com/adding-users/`,
 			title: translate( 'Inviting Contributors, Followers, and Viewers' ),
 			description: translate(
 				'Invite contributors, followers, and viewers to collaborate with others and grow your audience!'
@@ -754,7 +755,7 @@ const contextLinksForSection = {
 	],
 	reader: [
 		{
-			link: 'http://en.support.wordpress.com/reader/',
+			link: `https://${ supportLocale }.support.wordpress.com/reader/`,
 			post_id: 32011,
 			title: translate( 'The Reader: An Overview' ),
 			description: translate(
@@ -763,14 +764,14 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/following/',
+			link: `https://${ supportLocale }.support.wordpress.com/following/`,
 			title: translate( 'Follow Blogs' ),
 			description: translate(
 				'When you follow a blog on WordPress.com, new posts from that site will automatically appear in your Reader.'
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/topics/',
+			link: `https://${ supportLocale }.support.wordpress.com/topics/`,
 			post_id: 2166,
 			title: translate( 'Following Specific Topics in the Reader' ),
 			description: translate(
@@ -779,7 +780,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/grow-your-community/',
+			link: `https://${ supportLocale }.support.wordpress.com/grow-your-community/`,
 			title: translate( 'Grow Your Community' ),
 			description: translate(
 				'You’ve worked hard on building your site, now it’s time to explore the community and get noticed.'
@@ -788,7 +789,7 @@ const contextLinksForSection = {
 	],
 	help: [
 		{
-			link: 'http://en.support.wordpress.com/blogging-u/',
+			link: `https://${ supportLocale }.support.wordpress.com/blogging-u/`,
 			post_id: 117437,
 			title: translate( 'Blogging U.' ),
 			description: translate(
@@ -797,7 +798,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/help-support-options/',
+			link: `https://${ supportLocale }.support.wordpress.com/help-support-options/`,
 			post_id: 149,
 			title: translate( 'Help! Getting WordPress.com Support' ),
 			description: translate(
@@ -805,7 +806,7 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'https://en.support.wordpress.com/',
+			link: 'https://${ supportLocale }.support.wordpress.com/',
 			title: translate( 'All Support Articles' ),
 			description: translate(
 				'Looking to learn more about a feature? Our docs have all the details.'
@@ -819,14 +820,14 @@ const contextLinksForSection = {
 	],
 	comments: [
 		{
-			link: 'http://en.support.wordpress.com/comments/',
+			link: `https://${ supportLocale }.support.wordpress.com/comments/`,
 			title: translate( 'Comments' ),
 			description: translate(
 				'Comments are a way for visitors to add feedback to your posts and pages.'
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/comment-display-options/',
+			link: `https://${ supportLocale }.support.wordpress.com/comment-display-options/`,
 			post_id: 5840,
 			title: translate( 'Comment Display Options' ),
 			description: translate(
@@ -835,14 +836,14 @@ const contextLinksForSection = {
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/unwanted-comments/',
+			link: `https://${ supportLocale }.support.wordpress.com/unwanted-comments/`,
 			title: translate( 'Unwanted Comments and Comment Spam' ),
 			description: translate(
 				'There are many ways to protect your WordPress.com blogs from unwanted comments. Learn all about them!'
 			),
 		},
 		{
-			link: 'http://en.support.wordpress.com/comment-likes/',
+			link: `https://${ supportLocale }.support.wordpress.com/comment-likes/`,
 			post_id: 88757,
 			title: translate( 'Comment Likes' ),
 			description: translate(
