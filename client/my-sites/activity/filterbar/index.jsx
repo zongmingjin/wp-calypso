@@ -219,7 +219,8 @@ export class Filterbar extends Component {
 export default connect(
 	() => ( {} ),
 	{
-		selectActionType: ( siteId, group ) => updateFilter( siteId, { group: group } ),
-		selectDateRange: ( siteId, from, to ) => updateFilter( siteId, { after: from, before: to } ),
+		selectActionType: ( siteId, group ) => updateFilter( siteId, { group: group, page: 1 } ),
+		selectDateRange: ( siteId, from, to ) =>
+			updateFilter( siteId, { after: from, before: to, page: 1 } ),
 	}
 )( localize( Filterbar ) );
