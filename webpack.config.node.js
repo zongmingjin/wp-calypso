@@ -14,6 +14,7 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const _ = require( 'lodash' );
 const os = require( 'os' );
+const moment = require( 'moment' );
 
 /**
  * Internal dependencies
@@ -28,6 +29,9 @@ const bundleEnv = config( 'env' );
 const isDevelopment = bundleEnv === 'development';
 
 const commitSha = process.env.hasOwnProperty( 'COMMIT_SHA' ) ? process.env.COMMIT_SHA : '(unknown)';
+const buildTimestamp = moment()
+	.utc()
+	.format();
 
 /**
  * This lists modules that must use commonJS `require()`s
@@ -166,6 +170,7 @@ const webpackConfig = {
 			PROJECT_NAME: JSON.stringify( config( 'project' ) ),
 			COMMIT_SHA: JSON.stringify( commitSha ),
 			'process.env.NODE_ENV': JSON.stringify( bundleEnv ),
+			BUILD_TIMESTAMP: JSON.stringify( buildTimestamp ),
 		} ),
 		new webpack.NormalModuleReplacementPlugin( /^lib[\/\\]abtest$/, 'lodash/noop' ), // Depends on BOM
 		new webpack.NormalModuleReplacementPlugin( /^lib[\/\\]analytics$/, 'lodash/noop' ), // Depends on BOM
