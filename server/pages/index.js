@@ -222,7 +222,8 @@ function getDefaultContext( request ) {
 		lang = request.context.lang;
 	}
 
-	const context = Object.assign( {}, request.context, {
+	const context = {
+		...request.context,
 		commitSha: process.env.hasOwnProperty( 'COMMIT_SHA' ) ? process.env.COMMIT_SHA : '(unknown)',
 		compileDebug: process.env.NODE_ENV === 'development',
 		urls: generateStaticUrls(),
@@ -245,7 +246,7 @@ function getDefaultContext( request ) {
 		store: createReduxStore( initialServerState ),
 		bodyClasses,
 		sectionCss,
-	} );
+	};
 
 	context.app = {
 		// use ipv4 address when is ipv4 mapped address
@@ -666,7 +667,7 @@ module.exports = function() {
 				const pathRegex = pathToRegExp( sectionPath );
 
 				app.get( pathRegex, function( req, res, next ) {
-					req.context = Object.assign( {}, req.context, { sectionName: section.name } );
+					req.context = { ...req.context, sectionName: section.name };
 
 					if ( config.isEnabled( 'code-splitting' ) ) {
 						req.context.chunkFiles = getFilesForChunk( section.name );
