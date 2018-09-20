@@ -1112,3 +1112,18 @@
 		}
 	}
 }
+
+.sharing-service-description {
+
+}
+
+.sharing-tag {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	fieldset {
+		margin-bottom: 0 !important;
+		width: calc(100% - 70px);
+	}
+}

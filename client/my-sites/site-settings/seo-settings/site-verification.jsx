@@ -7,16 +7,16 @@
 import React, { Component } from 'react';
 import notices from 'notices';
 import { connect } from 'react-redux';
-import { get, includes, isString, omit, partial, pickBy } from 'lodash';
+import { get, includes, isString, omit, partial, pickBy, noop } from 'lodash';
 import { localize } from 'i18n-calypso';
+import SocialLogo from 'social-logos';
 
 /**
  * Internal dependencies
  */
-import Button from 'components/button';
+import ExternalLink from 'components/external-link';
 import Card from 'components/card';
 import SupportInfo from 'components/support-info';
-import ExternalLink from 'components/external-link';
 import FormInput from 'components/forms/form-text-input-with-affixes';
 import FormInputValidation from 'components/forms/form-input-validation';
 import FormFieldset from 'components/forms/form-fieldset';
@@ -35,6 +35,8 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import { requestSite } from 'state/sites/actions';
 import { requestSiteSettings, saveSiteSettings } from 'state/site-settings/actions';
 import { protectForm } from 'lib/protect-form';
+import FoldableCard from 'components/foldable-card';
+import Button from '../../../components/button';
 
 class SiteVerification extends Component {
 	static serviceIds = {
@@ -294,18 +296,13 @@ class SiteVerification extends Component {
 				<QuerySiteSettings siteId={ siteId } />
 				{ siteIsJetpack && <QueryJetpackModules siteId={ siteId } /> }
 
-				<SectionHeader label={ translate( 'Site Verification Services' ) }>
-					<Button
-						compact
-						primary
-						onClick={ this.handleFormSubmit }
-						type="submit"
-						disabled={ isSaveDisabled || isVerificationDisabled }
-					>
-						{ isSubmittingForm ? translate( 'Saving…' ) : translate( 'Save Settings' ) }
-					</Button>
-				</SectionHeader>
-				<Card>
+				<SectionHeader label="Webmaster Tools" />
+
+				<Card compact>
+					<p>
+						Get access to advanced search engines features by verifying your site with these popular webmaster tools:
+					</p>
+
 					{ siteIsJetpack && (
 						<FormFieldset>
 							<SupportInfo
@@ -322,120 +319,238 @@ class SiteVerification extends Component {
 							/>
 						</FormFieldset>
 					) }
+				</Card>
 
-					<p>
-						{ translate(
-							'Note that {{b}}verifying your site with these services is not necessary{{/b}} in order' +
-								' for your site to be indexed by search engines. To use these advanced search engine tools' +
-								' and verify your site with a service, paste the HTML Tag code below. Read the' +
-								' {{support}}full instructions{{/support}} if you are having trouble. Supported verification services:' +
-								' {{google}}Google Search Console{{/google}}, {{bing}}Bing Webmaster Center{{/bing}},' +
-								' {{pinterest}}Pinterest Site Verification{{/pinterest}}, and {{yandex}}Yandex.Webmaster{{/yandex}}.',
-							{
-								components: {
-									b: <strong />,
-									support: (
-										<ExternalLink
-											icon={ true }
-											target="_blank"
-											href="https://en.support.wordpress.com/webmaster-tools/"
-										/>
-									),
-									google: (
-										<ExternalLink
+				<form onChange={ this.props.markChanged } className="seo-settings__seo-form">
+					<ul className="sharing-services-group__services">
+						<li>
+							<FoldableCard className="sharing-service" clickableHeader compact header={ (
+								<div>
+									<img src="/calypso/images/seo/google.png" className="sharing-service__logo"
+										width={ 44 } />
+
+									<div className="sharing-service__name">
+										<h2>Google Search Console</h2>
+
+										<p className="sharing-service__description">
+											Make your site shine in Google Search results
+										</p>
+									</div>
+								</div>
+							) } summary="&nbsp;">
+								<div className="sharing-service__content">
+									<div className="sharing-service-example">
+										<div className="sharing-service-description">
+											Google Search Console helps you monitor and maintain your site's presence in
+											Google Search results:
+
+											<ul>
+												<li>Make sure that Google can access your content</li>
+												<li>Track your site's search performance</li>
+												<li>Discover sites that are linking to your website</li>
+											</ul>
+										</div>
+
+										<p>
+											Enter the HTML tag code provided by <ExternalLink
 											icon={ true }
 											target="_blank"
 											href="https://www.google.com/webmasters/tools/"
-										/>
-									),
-									bing: (
-										<ExternalLink
-											icon={ true }
+										>Google Search Console</ExternalLink> (<ExternalLink
 											target="_blank"
-											href="https://www.bing.com/webmaster/"
-										/>
-									),
-									pinterest: (
-										<ExternalLink
+											href="https://en.support.wordpress.com/webmaster-tools/"
+										>learn more</ExternalLink>):
+										</p>
+
+										<div className="sharing-tag">
+											<FormFieldset>
+												<FormInput
+													prefix={ translate( 'Google' ) }
+													name="verification_code_google"
+													type="text"
+													value={ googleCode }
+													id="verification_code_google"
+													spellCheck="false"
+													disabled={ isVerificationDisabled }
+													isError={ this.hasError( 'google' ) }
+													placeholder={ this.getMetaTag( 'google', placeholderTagContent ) }
+													onChange={ this.changeGoogleCode }
+												/>
+												{ this.hasError( 'google' ) && this.getVerificationError( showPasteError ) }
+											</FormFieldset>
+
+											<Button primary>
+												Save
+											</Button>
+										</div>
+									</div>
+								</div>
+							</FoldableCard>
+						</li>
+
+						<li>
+							<FoldableCard className="sharing-service" clickableHeader compact header={ (
+								<div>
+									<img src="/calypso/images/seo/bing.png" className="sharing-service__logo"
+										width={ 42 } />
+
+									<div className="sharing-service__name">
+										<h2>Bing Webmaster Tools</h2>
+
+										<p className="sharing-service__description">
+											Get insights on what people are searching on Bing
+										</p>
+									</div>
+								</div>
+							) } summary="&nbsp;">
+								<div className="sharing-service__content">
+									<div className="sharing-service-example">
+										<p>
+											Enter the HTML tag code provided by <ExternalLink
+											icon
+											target="_blank"
+											href="https://www.bing.com/toolbox/webmaster/"
+										>Bing Webmaster Tools</ExternalLink> (<ExternalLink
+											target="_blank"
+											href="https://en.support.wordpress.com/webmaster-tools/"
+										>learn more</ExternalLink>):
+										</p>
+
+										<div className="sharing-tag">
+											<FormFieldset>
+												<FormInput
+													prefix={ translate( 'Bing' ) }
+													name="verification_code_bing"
+													type="text"
+													value={ bingCode }
+													id="verification_code_bing"
+													spellCheck="false"
+													disabled={ isVerificationDisabled }
+													isError={ this.hasError( 'bing' ) }
+													placeholder={ this.getMetaTag( 'bing', placeholderTagContent ) }
+													onChange={ this.changeBingCode }
+												/>
+												{ this.hasError( 'bing' ) && this.getVerificationError( showPasteError ) }
+											</FormFieldset>
+
+											<Button primary>
+												Save
+											</Button>
+										</div>
+									</div>
+								</div>
+							</FoldableCard>
+						</li>
+
+						<li>
+							<FoldableCard className="sharing-service" clickableHeader compact header={ (
+								<div>
+									<img src="/calypso/images/seo/pinterest.png" className="sharing-service__logo"
+										width={ 40 } />
+
+									<div className="sharing-service__name">
+										<h2>Pinterest</h2>
+
+										<p className="sharing-service__description">
+											Get access to analytics and other Pinterest features
+										</p>
+									</div>
+								</div>
+							) } summary="&nbsp;">
+								<div className="sharing-service__content">
+									<div className="sharing-service-example">
+										<p>
+											Enter the HTML tag code provided by <ExternalLink
 											icon={ true }
 											target="_blank"
 											href="https://pinterest.com/website/verify/"
-										/>
-									),
-									yandex: (
-										<ExternalLink
+										>Pinterest</ExternalLink> (<ExternalLink
+											target="_blank"
+											href="https://en.support.wordpress.com/webmaster-tools/"
+										>learn more</ExternalLink>):
+										</p>
+
+										<div className="sharing-tag">
+											<FormFieldset>
+												<FormInput
+													prefix={ translate( 'Pinterest' ) }
+													name="verification_code_pinterest"
+													type="text"
+													value={ pinterestCode }
+													id="verification_code_pinterest"
+													spellCheck="false"
+													disabled={ isVerificationDisabled }
+													isError={ this.hasError( 'pinterest' ) }
+													placeholder={ this.getMetaTag( 'pinterest', placeholderTagContent ) }
+													onChange={ this.changePinterestCode }
+												/>
+												{ this.hasError( 'pinterest' ) && this.getVerificationError( showPasteError ) }
+											</FormFieldset>
+
+											<Button primary>
+												Save
+											</Button>
+										</div>
+									</div>
+								</div>
+							</FoldableCard>
+						</li>
+
+						<li>
+							<FoldableCard className="sharing-service" clickableHeader compact header={ (
+								<div>
+									<img src="/calypso/images/seo/yandex.png" className="sharing-service__logo"
+										width={ 42 } />
+
+									<div className="sharing-service__name">
+										<h2>Yandex.Webmaster</h2>
+
+										<p className="sharing-service__description">
+											Track statistics for queries that showed your site in Yandex search results
+										</p>
+									</div>
+								</div>
+							) } summary="&nbsp;">
+								<div className="sharing-service__content">
+									<div className="sharing-service-example">
+										<p>
+											Enter the HTML tag code provided by <ExternalLink
 											icon={ true }
 											target="_blank"
-											href="https://webmaster.yandex.com/sites/"
-										/>
-									),
-								},
-							}
-						) }
-					</p>
-					<form onChange={ this.props.markChanged } className="seo-settings__seo-form">
-						<FormFieldset>
-							<FormInput
-								prefix={ translate( 'Google' ) }
-								name="verification_code_google"
-								type="text"
-								value={ googleCode }
-								id="verification_code_google"
-								spellCheck="false"
-								disabled={ isVerificationDisabled }
-								isError={ this.hasError( 'google' ) }
-								placeholder={ this.getMetaTag( 'google', placeholderTagContent ) }
-								onChange={ this.changeGoogleCode }
-							/>
-							{ this.hasError( 'google' ) && this.getVerificationError( showPasteError ) }
-						</FormFieldset>
-						<FormFieldset>
-							<FormInput
-								prefix={ translate( 'Bing' ) }
-								name="verification_code_bing"
-								type="text"
-								value={ bingCode }
-								id="verification_code_bing"
-								spellCheck="false"
-								disabled={ isVerificationDisabled }
-								isError={ this.hasError( 'bing' ) }
-								placeholder={ this.getMetaTag( 'bing', placeholderTagContent ) }
-								onChange={ this.changeBingCode }
-							/>
-							{ this.hasError( 'bing' ) && this.getVerificationError( showPasteError ) }
-						</FormFieldset>
-						<FormFieldset>
-							<FormInput
-								prefix={ translate( 'Pinterest' ) }
-								name="verification_code_pinterest"
-								type="text"
-								value={ pinterestCode }
-								id="verification_code_pinterest"
-								spellCheck="false"
-								disabled={ isVerificationDisabled }
-								isError={ this.hasError( 'pinterest' ) }
-								placeholder={ this.getMetaTag( 'pinterest', placeholderTagContent ) }
-								onChange={ this.changePinterestCode }
-							/>
-							{ this.hasError( 'pinterest' ) && this.getVerificationError( showPasteError ) }
-						</FormFieldset>
-						<FormFieldset>
-							<FormInput
-								prefix={ translate( 'Yandex' ) }
-								name="verification_code_yandex"
-								type="text"
-								value={ yandexCode }
-								id="verification_code_yandex"
-								spellCheck="false"
-								disabled={ isVerificationDisabled }
-								isError={ this.hasError( 'yandex' ) }
-								placeholder={ this.getMetaTag( 'yandex', placeholderTagContent ) }
-								onChange={ this.changeYandexCode }
-							/>
-							{ this.hasError( 'yandex' ) && this.getVerificationError( showPasteError ) }
-						</FormFieldset>
-					</form>
-				</Card>
+											href="https://webmaster.yandex.com/"
+										>Yandex.Webmaster</ExternalLink> (<ExternalLink
+											target="_blank"
+											href="https://en.support.wordpress.com/webmaster-tools/"
+										>learn more</ExternalLink>):
+										</p>
+
+										<div className="sharing-tag">
+											<FormFieldset>
+												<FormInput
+													prefix={ translate( 'Yandex' ) }
+													name="verification_code_yandex"
+													type="text"
+													value={ yandexCode }
+													id="verification_code_yandex"
+													spellCheck="false"
+													disabled={ isVerificationDisabled }
+													isError={ this.hasError( 'yandex' ) }
+													placeholder={ this.getMetaTag( 'yandex', placeholderTagContent ) }
+													onChange={ this.changeYandexCode }
+												/>
+												{ this.hasError( 'yandex' ) && this.getVerificationError( showPasteError ) }
+											</FormFieldset>
+
+											<Button primary>
+												Save
+											</Button>
+										</div>
+									</div>
+								</div>
+							</FoldableCard>
+						</li>
+					</ul>
+				</form>
 			</div>
 		);
 	}
