@@ -1,17 +1,14 @@
 /** @format */
-
 /**
  * External dependencies
  */
-
 import Dispatcher from 'dispatcher';
 import { castArray, includes } from 'lodash';
-import wpLib from 'lib/wp';
-const wpcom = wpLib.undocumented();
 
 /**
  * Internal dependencies
  */
+import wpLib from 'lib/wp';
 import {
 	IMPORTS_AUTHORS_SET_MAPPING,
 	IMPORTS_AUTHORS_START_MAPPING,
@@ -31,8 +28,10 @@ import {
 	IMPORTS_UPLOAD_START,
 } from 'state/action-types';
 import { appStates } from 'state/imports/constants';
-import { fromApi, toApi } from './common';
 import { reduxDispatch } from 'lib/redux-bridge';
+import { fromApi, toApi } from 'lib/importer/common';
+
+const wpcom = wpLib.undocumented();
 
 const ID_GENERATOR_PREFIX = 'local-generated-id-';
 
