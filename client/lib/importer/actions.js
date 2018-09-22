@@ -62,23 +62,30 @@ const createImportOrder = importerStatus =>
 		importerState: appStates.IMPORTING,
 	} );
 
-const apiStart = () => Dispatcher.handleViewAction( { type: IMPORTS_FETCH } );
+const apiStart = () => {
+	const action = { type: IMPORTS_FETCH };
+	Dispatcher.handleViewAction( action );
+};
+
 const apiSuccess = data => {
-	Dispatcher.handleViewAction( { type: IMPORTS_FETCH_COMPLETED } );
+	const action = { type: IMPORTS_FETCH_COMPLETED };
+	Dispatcher.handleViewAction( action );
 
 	return data;
 };
 const apiFailure = data => {
-	Dispatcher.handleViewAction( { type: IMPORTS_FETCH_FAILED } );
+	const action = { type: IMPORTS_FETCH_FAILED };
+	Dispatcher.handleViewAction( action );
 
 	return data;
 };
 
 function receiveImporterStatus( importerStatus ) {
-	Dispatcher.handleViewAction( {
+	const action = {
 		type: IMPORTS_IMPORT_RECEIVE,
 		importerStatus,
-	} );
+	};
+	Dispatcher.handleViewAction( action );
 }
 
 export function cancelImport( siteId, importerId ) {
@@ -87,11 +94,13 @@ export function cancelImport( siteId, importerId ) {
 		importerId,
 	};
 	Dispatcher.handleViewAction( lockImportAction );
-	Dispatcher.handleViewAction( {
+
+	const cancelImportAction = {
 		type: IMPORTS_IMPORT_CANCEL,
 		importerId,
 		siteId,
-	} );
+	};
+	Dispatcher.handleViewAction( cancelImportAction );
 
 	// Bail if this is merely a local importer object because
 	// there is nothing on the server-side to cancel
@@ -141,11 +150,13 @@ export function resetImport( siteId, importerId ) {
 		importerId,
 	};
 	Dispatcher.handleViewAction( lockImportAction );
-	Dispatcher.handleViewAction( {
+
+	const resetImportAction = {
 		type: IMPORTS_IMPORT_RESET,
 		importerId,
 		siteId,
-	} );
+	};
+	Dispatcher.handleViewAction( resetImportAction );
 
 	apiStart();
 	wpcom
@@ -184,10 +195,12 @@ export function startMappingAuthors( importerId ) {
 		importerId,
 	};
 	Dispatcher.handleViewAction( lockImportAction );
-	Dispatcher.handleViewAction( {
+
+	const startMappingAuthorsAction = {
 		type: IMPORTS_AUTHORS_START_MAPPING,
 		importerId,
-	} );
+	};
+	Dispatcher.handleViewAction( startMappingAuthorsAction );
 }
 
 export const setUploadProgress = ( importerId, data ) => ( {
@@ -217,12 +230,13 @@ export function startImporting( importerStatus ) {
 	} = importerStatus;
 
 	const unlockImportAction = { type: IMPORTS_IMPORT_UNLOCK, importerId };
-
 	Dispatcher.handleViewAction( unlockImportAction );
-	Dispatcher.handleViewAction( {
+
+	const startImportingAction = {
 		type: IMPORTS_START_IMPORTING,
 		importerId,
-	} );
+	};
+	Dispatcher.handleViewAction( startImportingAction );
 
 	wpcom.updateImporter( siteId, createImportOrder( importerStatus ) );
 }
@@ -232,7 +246,6 @@ export const startUpload = ( importerStatus, file ) => {
 		importerId,
 		site: { ID: siteId },
 	} = importerStatus;
-
 	const startUploadAction = {
 		type: IMPORTS_UPLOAD_START,
 		filename: file.name,
