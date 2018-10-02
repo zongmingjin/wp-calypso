@@ -16,5 +16,14 @@ import { get } from 'lodash';
  * @return {?Boolean}            Whether the module is active
  */
 export default function isJetpackModuleActive( state, siteId, moduleSlug ) {
+	const module = get( state.jetpack.modules.items, [ siteId, moduleSlug ], null );
+	const override = get( module, [ 'override' ] );
+
+	if ( 'active' === override ) {
+		return true;
+	}
+	if ( 'inactive' === override ) {
+		return false;
+	}
 	return get( state.jetpack.modules.items, [ siteId, moduleSlug, 'active' ], null );
 }
