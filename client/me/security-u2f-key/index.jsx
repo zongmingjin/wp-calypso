@@ -63,9 +63,16 @@ class SecurityU2fKey extends React.Component {
 				.substring( 7 ),
 			signature_data: keyData.registrationData,
 		};
+		const queryString =
+			'?' +
+			Object.keys( body )
+				.map( function( key ) {
+					return key + '=' + body[ key ];
+				} )
+				.join( '&' );
 		wpcom.req.post(
 			'/me/two-step/security-key/registration_validate',
-			body,
+			queryString,
 			this.getKeysFromServer
 		);
 	};
