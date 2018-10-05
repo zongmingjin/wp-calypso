@@ -55,30 +55,19 @@ class SecurityU2fKey extends React.Component {
 	};
 
 	addKeyRegister = keyData => {
-		console.log( keyData.clientData ); //eslint-disable-line
 		const body = {
 			client_data: keyData.clientData,
-			key_handle: Math.random()
-				.toString( 36 )
-				.substring( 7 ),
+			key_handle: keyData.challenge,
 			signature_data: keyData.registrationData,
 		};
-		const queryString =
-			'?' +
-			Object.keys( body )
-				.map( function( key ) {
-					return key + '=' + body[ key ];
-				} )
-				.join( '&' );
-		wpcom.req.post(
-			'/me/two-step/security-key/registration_validate',
-			queryString,
-			this.getKeysFromServer
-		);
+		const args = {
+			path: '/me/two-step/security-key/registration_validate',
+			body,
+		};
+		wpcom.req.post( args, this.getKeysFromServer );
 	};
 
 	deleteKeyRegister = keyData => {
-		console.log( 'Register key: ', keyData ); //eslint-disable-line
 		wpcom.req.post(
 			'/me/two-step/security-key/delete',
 			{ handle: keyData.handle },
