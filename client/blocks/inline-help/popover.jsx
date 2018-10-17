@@ -111,6 +111,9 @@ class InlineHelpPopover extends Component {
 				className={ classNames( 'inline-help__popover', popoverClasses ) }
 			>
 				<QuerySupportTypes />
+				<div className="inline-help__tour">
+					<Button>{ translate( 'Load Demo' ) }</Button>
+				</div>
 				<div className="inline-help__search">
 					<InlineHelpSearchCard
 						openResult={ this.openResultView }
@@ -133,6 +136,10 @@ class InlineHelpPopover extends Component {
 				/>
 
 				<div className="inline-help__footer">
+					<div>
+						<p>foo bar</p>
+						<Button>{ translate( 'Switch to the Classic Editor' ) }</Button>
+					</div>
 					<Button
 						onClick={ this.moreHelpClicked }
 						className="inline-help__more-button"
