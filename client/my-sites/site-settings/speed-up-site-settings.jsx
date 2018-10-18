@@ -65,7 +65,7 @@ class SpeedUpSiteSettings extends Component {
 						/>
 					</FormFieldset>
 
-					{ jetpackVersionSupportsLazyImages && (
+					{ /* { jetpackVersionSupportsLazyImages && (
 						<FormFieldset className="site-settings__formfieldset has-divider is-top-only">
 							<SupportInfo
 								text={ translate(
@@ -85,7 +85,49 @@ class SpeedUpSiteSettings extends Component {
 								disabled={ isRequestingOrSaving }
 							/>
 						</FormFieldset>
-					) }
+					) } */ }
+					<FormFieldset className="site-settings__formfieldset has-divider is-top-only">
+						<SupportInfo
+							text={ translate( 'Gorgeous full-screen photo browsing experience.' ) }
+							link="https://jetpack.com/support/carousel/"
+						/>
+						<JetpackModuleToggle
+							siteId={ selectedSiteId }
+							moduleSlug="carousel"
+							label={ translate( 'Enable site accelerator' ) }
+							disabled={ isRequestingOrSaving }
+						/>
+						<div className="site-settings__child-settings">
+							<JetpackModuleToggle
+								checked={ false }
+								siteId={ selectedSiteId }
+								moduleSlug="lazy-images"
+								label={ translate( 'Speed up images' ) }
+								disabled={ isRequestingOrSaving }
+								onChange={ () => {} }
+								description={ translate(
+									"Improve your site's speed by only loading images visible on the screen. New images will " +
+										'load just before they scroll into view. This prevents viewers from having to download ' +
+										"all the images on a page all at once, even ones they can't see."
+								) }
+							/>
+							{ /* <FormSettingExplanation isIndented>{ translate(
+									"Improve your site's speed by only loading images visible on the screen. New images will " +
+										'load just before they scroll into view. This prevents viewers from having to download ' +
+										"all the images on a page all at once, even ones they can't see."
+								) }</FormSettingExplanation> */ }
+							<JetpackModuleToggle
+								checked={ false }
+								siteId={ selectedSiteId }
+								moduleSlug="photon-cdn"
+								disabled={ isRequestingOrSaving }
+								onChange={ () => {} }
+								label={ translate(
+									'Speed up all static files (CSS and JavaScript) for WordPress, WooCommerce, and Jetpack'
+								) }
+							/>
+						</div>
+					</FormFieldset>
 				</Card>
 			</div>
 		);
