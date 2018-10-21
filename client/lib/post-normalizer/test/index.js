@@ -1072,13 +1072,27 @@ describe( 'index', () => {
 				}
 			);
 		} );
-		test( 'links to embedded Polldaddy polls', done => {
+		test( 'links to embedded Crowdsignal/poll.fm polls', done => {
 			normalizer(
 				{
 					content:
-						'<a name="pd_a_8980420"></a>' +
-						'<div class="PDS_Poll" id="PDI_container8980420" style="display:inline-block;"></div>' +
-						'<div id="PD_superContainer"></div>' +
+						'<script type="text/javascript" charset="utf-8" src="https://secure.polldaddy.com/p/10053693.js"></script>' +
+						'<noscript><a href="https://poll.fm/10053693">Banana or mango?</a></noscript>',
+				},
+				[ normalizer.withContentDOM( [ normalizer.content.detectPolls ] ) ],
+				function( err, normalized ) {
+					assert.include(
+						normalized.content,
+						'<p><a target="_blank" rel="external noopener noreferrer" href="https://poll.fm/10053693">Take our poll</a></p>'
+					);
+					done( err );
+				}
+			);
+		} );
+		test( 'links to embedded Polldaddy polls - HTTP', done => {
+			normalizer(
+				{
+					content:
 						'<script type="text/javascript" charset="UTF-8" src="//static.polldaddy.com/p/8980420.js"></script>' +
 						'<noscript><a href="http://polldaddy.com/poll/8980420">Take Our Poll</a></noscript>',
 				},
@@ -1086,7 +1100,24 @@ describe( 'index', () => {
 				function( err, normalized ) {
 					assert.include(
 						normalized.content,
-						'<p><a target="_blank" rel="external noopener noreferrer" href="https://polldaddy.com/poll/8980420">Take our poll</a></p>'
+						'<p><a target="_blank" rel="external noopener noreferrer" href="https://poll.fm/8980420">Take our poll</a></p>'
+					);
+					done( err );
+				}
+			);
+		} );
+		test( 'links to embedded Polldaddy polls - HTTPS', done => {
+			normalizer(
+				{
+					content:
+						'<script type="text/javascript" charset="UTF-8" src="//static.polldaddy.com/p/8980420.js"></script>' +
+						'<noscript><a href="https://polldaddy.com/poll/8980420">Take Our Poll</a></noscript>',
+				},
+				[ normalizer.withContentDOM( [ normalizer.content.detectPolls ] ) ],
+				function( err, normalized ) {
+					assert.include(
+						normalized.content,
+						'<p><a target="_blank" rel="external noopener noreferrer" href="https://poll.fm/8980420">Take our poll</a></p>'
 					);
 					done( err );
 				}
