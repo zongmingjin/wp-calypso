@@ -3,10 +3,8 @@
 /**
  * External Dependencies
  */
-import classnames from 'classnames';
 import filter from 'lodash/filter';
 import pick from 'lodash/pick';
-import find from 'lodash/find';
 import { Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
@@ -28,53 +26,18 @@ import {
 	MediaUpload,
 } from '@wordpress/editor';
 import { create } from '@wordpress/rich-text';
-// @TODO:
-// Adding `@wordpress/token-list` to dependencies conflicts with current 3.0.0 version of `@wordpress/editor`
-// This will still work for Jetpack, but will fail when importing the block in Calypso
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TokenList from '@wordpress/token-list';
 
 /**
  * Internal dependencies
  */
-import { ALLOWED_MEDIA_TYPES, LAYOUTS, MAX_COLUMNS, DEFAULT_COLUMNS } from './constants';
+import { ALLOWED_MEDIA_TYPES, MAX_COLUMNS, DEFAULT_COLUMNS } from './constants';
 import GalleryGrid from './gallery-grid';
 import GalleryImage from './gallery-image';
+import { getActiveStyleName } from './layouts';
 
 export function defaultColumnsNumber( attributes ) {
 	return Math.min( DEFAULT_COLUMNS, attributes.images.length );
 }
-
-/**
- * Returns the active style from the given className.
- *
- * @param {Array} styles Block style variations.
- * @param {string} className  Class name
- *
- * @return {Object?} The active style.
- *
- * From https://github.com/WordPress/gutenberg/blob/077f6c4eb9ba061bc00d5f3ae956d4789a291fb5/packages/editor/src/components/block-styles/index.js#L21-L43
- */
-function getActiveStyle( styles, className ) {
-	for ( const style of new TokenList( className ).values() ) {
-		if ( style.indexOf( 'is-style-' ) === -1 ) {
-			continue;
-		}
-
-		const potentialStyleName = style.substring( 9 );
-		const activeStyle = find( styles, { name: potentialStyleName } );
-		if ( activeStyle ) {
-			return activeStyle;
-		}
-	}
-
-	return find( styles, 'isDefault' );
-}
-
-const getActiveStyleName = className => {
-	const activeStyle = getActiveStyle( LAYOUTS, className );
-	return activeStyle.name;
-};
 
 const pickRelevantMediaFiles = image => {
 	let { caption } = image;
@@ -138,18 +101,16 @@ class TiledGalleryEdit extends Component {
 		} );
 	}
 
-	setLayout( value ) {
-		this.setState( {
-			layout: value,
-		} );
+	setLayout( layout ) {
+		this.setState( { layout } );
 	}
 
-	setLinkTo( value ) {
-		this.props.setAttributes( { linkTo: value } );
+	setLinkTo( linkTo ) {
+		this.props.setAttributes( { linkTo } );
 	}
 
-	setColumnsNumber( value ) {
-		this.props.setAttributes( { columns: value } );
+	setColumnsNumber( columns ) {
+		this.props.setAttributes( { columns } );
 	}
 
 	toggleImageCrop() {
@@ -340,34 +301,28 @@ class TiledGalleryEdit extends Component {
 				</InspectorControls>
 				{ noticeUI }
 				{ dropZone }
-				<div
-					className={ classnames( className, {
-						'is-cropped': imageCrop,
-						[ `align${ align }` ]: align,
-						[ `columns-${ columns }` ]: columns,
-					} ) }
+				<GalleryGrid
+					align={ align }
+					className={ className }
+					columns={ columns }
+					imageCrop={ imageCrop }
+					images={ images }
+					layout={ this.state.layout }
+					renderGalleryImage={ renderGalleryImage }
 				>
-					<GalleryGrid
-						columns={ columns }
-						images={ images }
-						layout={ this.state.layout }
-						renderGalleryImage={ renderGalleryImage }
-					/>
 					{ isSelected && (
-						<div className="tiled-gallery__row tiled-gallery__upload">
-							<FormFileUpload
-								multiple
-								isLarge
-								className="block-library-gallery-add-item-button"
-								onChange={ this.uploadFromFiles }
-								accept="image/*"
-								icon="insert"
-							>
-								{ __( 'Upload an image', 'jetpack' ) }
-							</FormFileUpload>
-						</div>
+						<FormFileUpload
+							multiple
+							isLarge
+							className="block-library-gallery-add-item-button"
+							onChange={ this.uploadFromFiles }
+							accept="image/*"
+							icon="insert"
+						>
+							{ __( 'Upload an image', 'jetpack' ) }
+						</FormFileUpload>
 					) }
-				</div>
+				</GalleryGrid>
 			</Fragment>
 		);
 	}
