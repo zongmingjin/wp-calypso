@@ -1115,6 +1115,13 @@ const toursForSection = {
 	],
 };
 
+const componentsForSections = {
+	'gutenberg-editor': {
+		header: 'gutenbert/editor/inline-help/header',
+		footer: 'gutenberg/editor/inline-help/footer',
+	},
+};
+
 export function getContextResults( section ) {
 	// make sure editorially to show at most one tour and one video at once
 	// `first` is a safe-guard in case that fails
@@ -1122,4 +1129,8 @@ export function getContextResults( section ) {
 	const tour = first( get( toursForSection, section ) );
 	const links = get( contextLinksForSection, section, fallbackLinks );
 	return compact( [ tour, video, ...links ] );
+}
+
+export function getContextComponents( section ) {
+	return get( componentsForSections, section );
 }

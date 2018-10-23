@@ -26,6 +26,10 @@ import { getHelpSelectedSite } from 'state/help/selectors';
 import QuerySupportTypes from 'blocks/inline-help/inline-help-query-support-types';
 import InlineHelpContactView from 'blocks/inline-help/inline-help-contact-view';
 import WpcomChecklist from 'my-sites/checklist/wpcom-checklist';
+import { getContextComponents } from './contextual-help';
+import pathToSection from 'lib/path-to-section';
+import { getLastRouteAction } from 'state/ui/action-log/selectors';
+import AsyncLoad from 'components/async-load';
 
 class InlineHelpPopover extends Component {
 	static propTypes = {
@@ -101,6 +105,13 @@ class InlineHelpPopover extends Component {
 		const { translate, showNotification, setNotification, setStoredTask } = this.props;
 		const { showSecondaryView } = this.state;
 		const popoverClasses = { 'is-secondary-view-active': showSecondaryView };
+		const { header, footer } = getContextComponents( pathToSection( this.props.lastRoute.path ) );
+
+		console.log( header, footer );
+
+		asyncRequire( header, headerComponent => {
+			console.log( headerComponent );
+		} );
 
 		return (
 			<Popover
@@ -111,9 +122,7 @@ class InlineHelpPopover extends Component {
 				className={ classNames( 'inline-help__popover', popoverClasses ) }
 			>
 				<QuerySupportTypes />
-				<div className="inline-help__tour">
-					<Button>{ translate( 'Load Demo' ) }</Button>
-				</div>
+				{ /*header && <AsyncLoad require={ header } />*/ }
 				<div className="inline-help__search">
 					<InlineHelpSearchCard
 						openResult={ this.openResultView }
@@ -136,10 +145,7 @@ class InlineHelpPopover extends Component {
 				/>
 
 				<div className="inline-help__footer">
-					<div>
-						<p>foo bar</p>
-						<Button>{ translate( 'Switch to the Classic Editor' ) }</Button>
-					</div>
+					{ /*footer && <AsyncLoad require={ footer } />*/ }
 					<Button
 						onClick={ this.moreHelpClicked }
 						className="inline-help__more-button"
@@ -176,6 +182,7 @@ class InlineHelpPopover extends Component {
 
 function mapStateToProps( state ) {
 	return {
+		lastRoute: getLastRouteAction( state ),
 		searchQuery: getSearchQuery( state ),
 		selectedSite: getHelpSelectedSite( state ),
 		selectedResult: getInlineHelpCurrentlySelectedResult( state ),
