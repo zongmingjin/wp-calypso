@@ -11,7 +11,7 @@ export default {
 	getAll: function( selectedSite, siteCount ) {
 		let siteProps = {};
 		const defaultProps = {
-			environment: process.env.NODE_ENV,
+			environment: config( 'env' ),
 			site_count: siteCount || 0,
 			site_id_label: 'wpcom',
 			client: config( 'client_slug' ),
