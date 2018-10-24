@@ -35,7 +35,7 @@ const edit = ( { attributes: { notes }, className, isSelected, setAttributes } )
 
 const save = () => null;
 
-registerBlockType( 'a8c/editor-notes', {
+registerBlockType( 'jetpack/editor-notes', {
 	title: "Editor's Notes",
 	icon: 'welcome-write-blog',
 	category: 'common',

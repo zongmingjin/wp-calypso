@@ -270,7 +270,7 @@ const save = class extends Component {
 	}
 };
 
-registerBlockType( 'a8c/todo', {
+registerBlockType( 'jetpack/todo', {
 	title: __( 'Task List' ),
 	icon: 'editor-ul',
 	category: 'common',

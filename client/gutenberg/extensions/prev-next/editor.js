@@ -67,7 +67,7 @@ const edit = ( { attributes, className, isSelected, setAttributes } ) => {
 	);
 };
 
-registerBlockType( 'a8c/prev-next', {
+registerBlockType( 'jetpack/prev-next', {
 	title: __( 'Prev/Next Links' ),
 	icon: 'leftright',
 	category: 'common',
