@@ -41,7 +41,7 @@ const requestTwoFactorPushNotificationStatus = ( store, action ) => {
 		http(
 			{
 				url: addLocaleToWpcomUrl(
-					'https://wordpress.com/wp-login.php?action=two-step-authentication-endpoint',
+					config( 'login_url' ) + '?action=two-step-authentication-endpoint',
 					getLocaleSlug()
 				),
 				method: 'POST',

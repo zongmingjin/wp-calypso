@@ -173,7 +173,7 @@ export function setupMiddlewares( currentUser, reduxStore ) {
 				const queryFor = context.query && context.query.for;
 				if ( queryFor && 'jetpack' === queryFor ) {
 					window.location =
-						'https://wordpress.com/wp-login.php?redirect_to=https%3A%2F%2Fwordpress.com%2Fplans';
+						config( 'login_url' ) + '?redirect_to=https%3A%2F%2Fwordpress.com%2Fplans';
 				} else {
 					// pricing page is outside of Calypso, needs a full page load
 					window.location = 'https://wordpress.com/pricing';

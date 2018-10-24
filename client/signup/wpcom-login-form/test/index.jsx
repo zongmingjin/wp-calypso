@@ -11,7 +11,17 @@ import React from 'react';
  */
 import WpcomLoginForm from '..';
 import config from 'config';
-jest.mock( 'config', () => jest.fn().mockReturnValueOnce( 'wordpress.com' ) );
+jest.mock( 'config', () =>
+	jest.fn( key => {
+		switch ( key ) {
+			case 'hostname':
+				return 'wordpress.com';
+
+			case 'login_url':
+				return 'https://test-wordpress.com/wp-login.php';
+		}
+	} )
+);
 
 describe( 'WpcomLoginForm', () => {
 	const props = {
@@ -28,7 +38,7 @@ describe( 'WpcomLoginForm', () => {
 		const form = wrapper.find( 'form' );
 		expect( form ).to.have.length( 1 );
 		expect( form.prop( 'method' ) ).to.equal( 'post' );
-		expect( form.prop( 'action' ) ).to.equal( 'https://test.wordpress.com/wp-login.php' );
+		expect( form.prop( 'action' ) ).to.equal( 'https://test.test-wordpress.com/wp-login.php' );
 
 		// form should include default hidden elements
 		expect( wrapper.find( 'form > input[type="hidden"]' ) ).to.have.length( 4 );
@@ -70,12 +80,12 @@ describe( 'WpcomLoginForm', () => {
 		);
 
 		expect( wrapper.find( 'form' ).prop( 'action' ) ).to.equal(
-			'https://foo.wordpress.com/wp-login.php'
+			'https://foo.test-wordpress.com/wp-login.php'
 		);
 
 		wrapper.setProps( { redirectTo: 'https://bar.wordpress.com' } );
 		expect( wrapper.find( 'form' ).prop( 'action' ) ).to.equal(
-			'https://bar.wordpress.com/wp-login.php'
+			'https://bar.test-wordpress.com/wp-login.php'
 		);
 	} );
 
@@ -87,21 +97,21 @@ describe( 'WpcomLoginForm', () => {
 
 		// should has the same hostname with redirectTo prop.
 		expect( wrapper.find( 'form' ).prop( 'action' ) ).to.equal(
-			'https://foo.wordpress.com/wp-login.php'
+			'https://foo.test-wordpress.com/wp-login.php'
 		);
 
 		// should be default url
 		config.mockReturnValueOnce( 'wpcalypso.wordpress.com' );
 		wrapper.setProps( { log: 'wpcalpso' } ); // to update form action
 		expect( wrapper.find( 'form' ).prop( 'action' ) ).to.equal(
-			'https://wordpress.com/wp-login.php'
+			'https://test-wordpress.com/wp-login.php'
 		);
 
 		// should has the same hostname with redirectTo prop.
 		config.mockReturnValueOnce( 'bar.wordpress.com' );
 		wrapper.setProps( { log: 'bar' } ); // to update form action
 		expect( wrapper.find( 'form' ).prop( 'action' ) ).to.equal(
-			'https://foo.wordpress.com/wp-login.php'
+			'https://foo.test-wordpress.com/wp-login.php'
 		);
 
 		// should be default url
@@ -109,7 +119,7 @@ describe( 'WpcomLoginForm', () => {
 		config.mockReturnValueOnce( 'horizon.wordpress.com' );
 		wrapper.setProps( { log: 'horizon' } ); // to update form action
 		expect( wrapper.find( 'form' ).prop( 'action' ) ).to.equal(
-			'https://wordpress.com/wp-login.php'
+			'https://test-wordpress.com/wp-login.php'
 		);
 	} );
 
@@ -119,7 +129,7 @@ describe( 'WpcomLoginForm', () => {
 		} );
 
 		expect( wrapper.find( 'form' ).prop( 'action' ) ).to.equal(
-			'https://wordpress.com/wp-login.php'
+			'https://test-wordpress.com/wp-login.php'
 		);
 	} );
 } );

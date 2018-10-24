@@ -11,10 +11,11 @@ import { localize } from 'i18n-calypso';
  * Internal dependencies
  */
 import { addLocaleToWpcomUrl, getLocaleSlug } from 'lib/i18n-utils';
+import config from 'config';
 
 const LostPassword = ( { translate } ) => {
 	const url = addLocaleToWpcomUrl(
-		'https://wordpress.com/wp-login.php?action=lostpassword',
+		config( 'login_url' ) + '?action=lostpassword',
 		getLocaleSlug()
 	);
 	return (

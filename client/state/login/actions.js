@@ -125,10 +125,7 @@ export const loginUser = ( usernameOrEmail, password, redirectTo ) => dispatch =
 
 	return request
 		.post(
-			addLocaleToWpcomUrl(
-				'https://wordpress.com/wp-login.php?action=login-endpoint',
-				getLocaleSlug()
-			)
+			addLocaleToWpcomUrl( config( 'login_url' ) + '?action=login-endpoint', getLocaleSlug() )
 		)
 		.withCredentials()
 		.set( 'Content-Type', 'application/x-www-form-urlencoded' )
@@ -196,7 +193,7 @@ export const loginUserWithTwoFactorVerificationCode = ( twoStepCode, twoFactorAu
 	return request
 		.post(
 			addLocaleToWpcomUrl(
-				'https://wordpress.com/wp-login.php?action=two-step-authentication-endpoint',
+				config( 'login_url' ) + '?action=two-step-authentication-endpoint',
 				getLocaleSlug()
 			)
 		)
@@ -255,7 +252,7 @@ export const loginSocialUser = ( socialInfo, redirectTo ) => dispatch => {
 	return request
 		.post(
 			addLocaleToWpcomUrl(
-				'https://wordpress.com/wp-login.php?action=social-login-endpoint',
+				config( 'login_url' ) + '?action=social-login-endpoint',
 				getLocaleSlug()
 			)
 		)
@@ -446,7 +443,7 @@ export const sendSmsCode = () => ( dispatch, getState ) => {
 	return request
 		.post(
 			addLocaleToWpcomUrl(
-				'https://wordpress.com/wp-login.php?action=send-sms-code-endpoint',
+				config( 'login_url' ) + '?action=send-sms-code-endpoint',
 				getLocaleSlug()
 			)
 		)
@@ -502,10 +499,7 @@ export const logoutUser = redirectTo => ( dispatch, getState ) => {
 
 	return request
 		.post(
-			addLocaleToWpcomUrl(
-				'https://wordpress.com/wp-login.php?action=logout-endpoint',
-				getLocaleSlug()
-			)
+			addLocaleToWpcomUrl( config( 'login_url' ) + '?action=logout-endpoint', getLocaleSlug() )
 		)
 		.withCredentials()
 		.set( 'Content-Type', 'application/x-www-form-urlencoded' )

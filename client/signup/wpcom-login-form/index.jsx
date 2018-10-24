@@ -33,7 +33,7 @@ export default class WpcomLoginForm extends Component {
 			subdomain = this.props.redirectTo.match( subdomainRegExp )[ 1 ] + '.';
 		}
 
-		return `https://${ subdomain }wordpress.com/wp-login.php`;
+		return config( 'login_url' ).replace( /^https:\/\//, `https://${ subdomain }` );
 	}
 
 	renderExtraFields() {

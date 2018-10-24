@@ -11,6 +11,7 @@ import { translate } from 'i18n-calypso';
  * Internal dependencies
  */
 import { addLocaleToWpcomUrl, getLocaleSlug } from 'lib/i18n-utils';
+import config from 'config';
 
 export function getSMSMessageFromResponse( response ) {
 	const phoneNumber = get( response, 'body.data.phone_number' );
@@ -56,7 +57,7 @@ export function getErrorFromHTTPError( httpError ) {
 			field = errorFields[ code ];
 		} else if ( code === 'admin_login_attempt' ) {
 			const url = addLocaleToWpcomUrl(
-				'https://wordpress.com/wp-login.php?action=lostpassword',
+				config( 'login_url' ) + '?action=lostpassword',
 				getLocaleSlug()
 			);
 
