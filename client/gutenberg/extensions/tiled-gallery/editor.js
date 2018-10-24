@@ -20,7 +20,7 @@ const blockAttributes = {
 		type: 'array',
 		default: [],
 		source: 'query',
-		selector: '.wp-block-a8c-tiled-gallery .tiled-gallery__item',
+		selector: '.wp-block-jetpack-tiled-gallery .tiled-gallery__item',
 		query: {
 			url: {
 				source: 'attribute',
@@ -63,7 +63,7 @@ const blockAttributes = {
 	},
 };
 
-export const blockName = 'a8c/tiled-gallery';
+export const blockName = 'jetpack/tiled-gallery';
 
 const blockSettings = {
 	title: __( 'Tiled gallery', 'jetpack' ),
