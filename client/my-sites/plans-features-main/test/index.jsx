@@ -39,8 +39,14 @@ jest.mock( 'i18n-calypso', () => ( {
  */
 import { shallow } from 'enzyme';
 import React from 'react';
+
+/**
+ * Internal dependencies
+ */
+import { PlansFeaturesMain } from '../index';
 import {
 	PLAN_FREE,
+	PLAN_BUSINESS_MONTHLY,
 	PLAN_BUSINESS,
 	PLAN_BUSINESS_2_YEARS,
 	PLAN_ECOMMERCE,
@@ -59,11 +65,6 @@ import {
 	PLAN_JETPACK_BUSINESS,
 	PLAN_JETPACK_BUSINESS_MONTHLY,
 } from 'lib/plans/constants';
-
-/**
- * Internal dependencies
- */
-import { PlansFeaturesMain } from '../index';
 
 const props = {
 	selectedPlan: PLAN_FREE,
@@ -159,7 +160,29 @@ describe( 'PlansFeaturesMain.getPlansForPlanFeatures()', () => {
 	test( 'Should render <PlanFeatures /> with WP.com plans without free one when requested', () => {
 		const instance = new PlansFeaturesMain( { ...props, hideFreePlan: true } );
 		const plans = instance.getPlansForPlanFeatures();
-		expect( plans ).toEqual( [ PLAN_BLOGGER, PLAN_PERSONAL, PLAN_PREMIUM, PLAN_BUSINESS, PLAN_ECOMMERCE ] );
+		expect( plans ).toEqual( [
+			PLAN_BLOGGER,
+			PLAN_PERSONAL,
+			PLAN_PREMIUM,
+			PLAN_BUSINESS,
+			PLAN_ECOMMERCE,
+		] );
+	} );
+
+	test( 'Should render <PlanFeatures /> with monthly WP.com plans when requested', () => {
+		const instance = new PlansFeaturesMain( {
+			...props,
+			intervalType: 'monthly',
+			hideFreePlan: true,
+		} );
+		const plans = instance.getPlansForPlanFeatures();
+		expect( plans ).toEqual( [
+			PLAN_BLOGGER,
+			PLAN_PERSONAL,
+			PLAN_PREMIUM,
+			PLAN_BUSINESS_MONTHLY,
+			PLAN_ECOMMERCE,
+		] );
 	} );
 
 	test( 'Should render <PlanFeatures /> with WP.com 2-year plans when requested ( by plan )', () => {
