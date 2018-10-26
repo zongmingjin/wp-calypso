@@ -44,6 +44,9 @@ export const settings = {
 				longitude: -122.41941550000001,
 			},
 		},
+		focus_location: {
+			type: 'object',
+		},
 		marker_color: {
 			type: 'string',
 			default: 'red',

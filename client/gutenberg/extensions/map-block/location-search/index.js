@@ -14,8 +14,6 @@ import { BaseControl, TextControl } from '@wordpress/components';
 
 import Lookup from '../lookup';
 
-const placeholderText = __( 'Add a marker...', 'jetpack' );
-
 export class LocationSearch extends Component {
 	constructor() {
 		super( ...arguments );
@@ -79,19 +77,23 @@ export class LocationSearch extends Component {
 		this.textRef.current.value = null;
 	};
 	render() {
-		const { label } = this.props;
+		const { label, placeholder, value } = this.props;
 		return (
 			<BaseControl label={ label } className="components-location-search">
 				<Lookup completer={ this.autocompleter } onReset={ this.onReset }>
 					{ ( { isExpanded, listBoxId, activeId, onChange, onKeyDown } ) => (
 						<TextControl
-							placeholder={ placeholderText }
+							placeholder={ placeholder }
 							ref={ this.textRef }
-							onChange={ onChange }
+							onChange={ newValue => {
+								onChange( newValue );
+								this.props.onChange( newValue );
+							} }
 							aria-expanded={ isExpanded }
 							aria-owns={ listBoxId }
 							aria-activedescendant={ activeId }
 							onKeyDown={ onKeyDown }
+							value={ value }
 						/>
 					) }
 				</Lookup>
@@ -100,5 +102,10 @@ export class LocationSearch extends Component {
 		);
 	}
 }
+
+LocationSearch.defaultProps = {
+	placeholder: __( 'Add a marker...', 'jetpack' ),
+	onChange: () => {},
+};
 
 export default LocationSearch;

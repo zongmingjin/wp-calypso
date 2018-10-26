@@ -24,7 +24,7 @@ import {
 	PanelColorSettings,
 } from '@wordpress/editor';
 import apiFetch from '@wordpress/api-fetch';
-import { debounce } from 'lodash';
+import { debounce, clone } from 'lodash';
 
 /**
  * Internal dependencies
@@ -35,6 +35,7 @@ import AddPoint from './add-point';
 import Locations from './locations';
 import Map from './component.js';
 import MapThemePicker from './map-theme-picker';
+import LocationSearch from './location-search';
 
 const API_STATE_LOADING = 0;
 const API_STATE_FAILURE = 1;
@@ -43,9 +44,11 @@ const API_STATE_SUCCESS = 2;
 class MapEdit extends Component {
 	constructor() {
 		super( ...arguments );
+		const { focus_location } = this.props.attributes;
 		this.state = {
 			addPointVisibility: false,
 			apiState: API_STATE_LOADING,
+			focus_location_temp: focus_location && clone( focus_location.place_title ),
 		};
 		this.mapRef = createRef();
 		this.debouncedUpdateAPIKey = debounce( this.updateAPIKey, 800 );
@@ -105,8 +108,14 @@ class MapEdit extends Component {
 	}
 	render() {
 		const { className, setAttributes, attributes, noticeUI, notices } = this.props;
-		const { map_style, points, zoom, map_center, marker_color, align } = attributes;
-		const { addPointVisibility, api_key, apiKeyControl, apiState } = this.state;
+		const { map_style, points, zoom, map_center, marker_color, align, focus_location } = attributes;
+		const {
+			addPointVisibility,
+			api_key,
+			apiKeyControl,
+			apiState,
+			focus_location_temp,
+		} = this.state;
 		const inspectorControls = (
 			<Fragment>
 				<BlockControls>
@@ -124,6 +133,20 @@ class MapEdit extends Component {
 					</Toolbar>
 				</BlockControls>
 				<InspectorControls>
+					{ points.length < 1 && (
+						<PanelBody title={ __( 'Map Focus', 'jetpack' ) }>
+							<LocationSearch
+								label={ __( 'Center Point', 'jetpack' ) }
+								placeholder={ __( 'Choose a center location...' ) }
+								onAddPoint={ value => {
+									this.setState( { focus_location_temp: value.place_title } );
+									setAttributes( { focus_location: value } );
+								} }
+								onChange={ value => this.setState( { focus_location_temp: value } ) }
+								value={ focus_location_temp }
+							/>
+						</PanelBody>
+					) }
 					<PanelBody title={ __( 'Map Theme', 'jetpack' ) }>
 						<MapThemePicker
 							value={ map_style }
@@ -205,6 +228,7 @@ class MapEdit extends Component {
 						points={ points }
 						zoom={ zoom }
 						map_center={ map_center }
+						focus_location={ focus_location }
 						marker_color={ marker_color }
 						onSetZoom={ value => {
 							setAttributes( { zoom: value } );

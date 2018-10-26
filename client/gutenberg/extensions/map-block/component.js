@@ -28,7 +28,6 @@ export class Map extends Component {
 
 		this.state = {
 			map: null,
-			fit_to_bounds: false,
 			loaded: false,
 			google: null,
 		};
@@ -147,6 +146,9 @@ export class Map extends Component {
 	pointsChanged() {
 		this.setBoundsByMarkers();
 	}
+	focus_locationChanged() {
+		this.setBoundsByMarkers();
+	}
 	map_styleChanged() {
 		const { map, google } = this.state;
 
@@ -196,10 +198,23 @@ export class Map extends Component {
 	}
 	// Calculate the appropriate zoom and center point of the map based on defined markers
 	setBoundsByMarkers() {
-		const { zoom, points } = this.props;
+		const { zoom, points, focus_location } = this.props;
 		const { map, activeMarker, google } = this.state;
 		const bounds = new google.maps.LatLngBounds();
-		if ( ! map || ! points.length || activeMarker ) {
+		if ( ! map || activeMarker ) {
+			return;
+		}
+		if ( ! points.length && focus_location ) {
+			const centerPoint = new google.maps.LatLng(
+				focus_location.coordinates.latitude,
+				focus_location.coordinates.longitude
+			);
+			map.setCenter( centerPoint );
+			map.setZoom( parseInt( zoom, 10 ) );
+			map.setOptions( { zoomControl: true } );
+			return;
+		}
+		if ( ! points.length ) {
 			return;
 		}
 		points.forEach( point => {
@@ -213,14 +228,12 @@ export class Map extends Component {
 		// and zoom control is removed.
 		if ( points.length > 1 ) {
 			map.fitBounds( bounds );
-			this.setState( { fit_to_bounds: true } );
 			map.setOptions( { zoomControl: false } );
 			return;
 		}
 
 		// If there are one (or zero) points, user can set zoom
 		map.setZoom( parseInt( zoom, 10 ) );
-		this.setState( { fit_to_bounds: false } );
 		map.setOptions( { zoomControl: true } );
 	}
 	getMapStyle() {
