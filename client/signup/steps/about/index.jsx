@@ -515,6 +515,69 @@ class AboutStep extends Component {
 		}
 	}
 
+	getPreviewAddress() {
+		return (
+			<div className="site__address-bar">
+				<ul className="address">
+					<li className="address__detail street-addresss">
+						2011 Grinstead Dr, Suite 104, Louisville KY. 40204
+					</li>
+					<li className="address__detail phone">502-409-7499</li>
+					<li className="address__detail email">fatlamblouisville@gmail.com</li>
+				</ul>
+			</div>
+		);
+	}
+
+	getTitle() {
+		return (
+			<div className="site__title-bar">
+				<h1>The Fat Lamb</h1>
+			</div>
+		);
+	}
+
+	getHero() {
+		return (
+			<div className="site__hero-shot">
+				<h2>Welcome to our Italian Restaurant</h2>
+				<p>Fresh authentic cuisine in the Louisville area</p>
+				<img
+					className="site__hero-image"
+					src="https://wprestaurant002.files.wordpress.com/2018/10/pexels-photo-67468.jpeg"
+				/>
+			</div>
+		);
+	}
+
+	getPreviewBody() {
+		return (
+			<div className="site-preview__content">
+				<h2>Dedicated to quality</h2>
+				<p>Enjoy a unique mix of classic dishes and innovative house specialties.</p>
+
+				<h2>A local favorite</h2>
+				<p>
+					Proud to be a local Louisville business. Our delightful service close to home will make
+					you feel like family.
+				</p>
+			</div>
+		);
+	}
+
+	getPreview() {
+		return (
+			<div className="about__preview">
+				<div className="site-shell">
+					{ this.getPreviewAddress() }
+					{ this.getTitle() }
+					{ this.getHero() }
+					{ this.getPreviewBody() }
+				</div>
+			</div>
+		);
+	}
+
 	renderContent() {
 		const { translate, siteTitle } = this.props;
 
@@ -526,86 +589,7 @@ class AboutStep extends Component {
 			'about__wrapper-is-hidden': this.state.showStore,
 		} );
 
-		return (
-			<div className="about__wrapper">
-				<div className={ pressableWrapperClassName }>
-					<PressableStoreStep
-						{ ...this.props }
-						onBackClick={ this.handleStoreBackClick }
-						setRef={ this.setPressableStore }
-						isVisible={ this.state.showStore }
-					/>
-				</div>
-
-				<div className={ aboutFormClassName }>
-					<form onSubmit={ this.handleSubmit }>
-						<Card>
-							<FormFieldset>
-								<FormLabel htmlFor="siteTitle">
-									{ translate( 'What would you like to name your site?' ) }
-									<InfoPopover className="about__info-popover" position="top">
-										{ translate(
-											"We'll use this as your site title. " +
-												"Don't worry, you can change this later."
-										) }
-									</InfoPopover>
-								</FormLabel>
-								<FormTextInput
-									id="siteTitle"
-									name="siteTitle"
-									placeholder={ translate( "e.g. Mel's Diner, Stevie’s Blog, Vail Renovations" ) }
-									defaultValue={ siteTitle }
-									onChange={ this.handleChangeEvent }
-								/>
-							</FormFieldset>
-
-							{ ! this.state.hasPrepopulatedVertical && (
-								<FormFieldset>
-									<FormLabel htmlFor="siteTopic">
-										{ translate( 'What will your site be about?' ) }
-										<InfoPopover className="about__info-popover" position="top">
-											{ translate( "We'll use this to personalize your site and experience." ) }
-										</InfoPopover>
-									</FormLabel>
-									<FormTextInput
-										id="siteTopic"
-										name="siteTopic"
-										placeholder={ translate(
-											'e.g. Fashion, travel, design, plumber, electrician'
-										) }
-										value={ this.state.siteTopicValue }
-										onChange={ this.handleSuggestionChangeEvent }
-										onBlur={ this.hideSuggestions }
-										onKeyDown={ this.handleSuggestionKeyDown }
-										autoComplete="off"
-									/>
-									<Suggestions
-										ref={ this.setSuggestionsRef }
-										query={ this.state.query }
-										suggestions={ this.getSuggestions() }
-										suggest={ this.handleSuggestionMouseDown }
-									/>
-								</FormFieldset>
-							) }
-
-							<FormFieldset>
-								<FormLegend>
-									{ translate( 'What’s the primary goal you have for your site?' ) }
-								</FormLegend>
-								{ this.renderGoalCheckboxes() }
-							</FormFieldset>
-
-							{ this.renderExperienceOptions() }
-						</Card>
-						<div className="about__submit-wrapper">
-							<Button primary={ true } type="submit">
-								{ translate( 'Continue' ) }
-							</Button>
-						</div>
-					</form>
-				</div>
-			</div>
-		);
+		return <div className="about__wrapper">{ this.getPreview() }</div>;
 	}
 
 	render() {
