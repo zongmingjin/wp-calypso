@@ -17,9 +17,7 @@ import { localizeUrl } from 'lib/i18n-utils';
 const fallbackLinks = [
 	{
 		link: localizeUrl(
-			localizeUrl(
-				'https://en.support.wordpress.com/do-i-need-a-website-a-blog-or-a-website-with-a-blog/'
-			)
+			'https://en.support.wordpress.com/do-i-need-a-website-a-blog-or-a-website-with-a-blog/'
 		),
 		post_id: 143180,
 		title: translate( 'Do I Need a Website, a Blog, or a Website with a Blog?' ),
@@ -28,7 +26,7 @@ const fallbackLinks = [
 		),
 	},
 	{
-		link: localizeUrl( localizeUrl( 'https://en.support.wordpress.com/business-plan/' ) ),
+		link: localizeUrl( 'https://en.support.wordpress.com/business-plan/' ),
 		post_id: 134940,
 		title: translate( 'Uploading custom plugins and themes' ),
 		description: translate(
@@ -36,7 +34,7 @@ const fallbackLinks = [
 		),
 	},
 	{
-		link: localizeUrl( localizeUrl( 'https://en.support.wordpress.com/all-about-domains/' ) ),
+		link: localizeUrl( 'https://en.support.wordpress.com/all-about-domains/' ),
 		post_id: 41171,
 		title: translate( 'All About Domains' ),
 		description: translate(
@@ -44,7 +42,7 @@ const fallbackLinks = [
 		),
 	},
 	{
-		link: localizeUrl( localizeUrl( 'https://en.support.wordpress.com/start/' ) ),
+		link: localizeUrl( 'https://en.support.wordpress.com/start/' ),
 		post_id: 81083,
 		title: translate( 'Quick-Start Guide' ),
 		description: translate(
