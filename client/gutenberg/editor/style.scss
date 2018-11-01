@@ -52,8 +52,15 @@ $gutenberg-theme-toggle: #11a0d2;
 		}
 	}
 
-	.edit-post-layout .editor-post-publish-panel {
-		top: 0;
+	.edit-post-layout {
+		.edit-post-layout__content {
+			// Overrides https://github.com/WordPress/gutenberg/blob/a2f81faa58afbbcb28d68ef879a5354c257b2d85/packages/edit-post/src/components/layout/style.scss#L88-L95
+			overscroll-behavior-y: auto;
+		}
+
+		.editor-post-publish-panel {
+			top: 0;
+		}
 	}
 
 	.editor-inserter__menu .editor-inserter__search {
@@ -114,6 +121,37 @@ $gutenberg-theme-toggle: #11a0d2;
 			top: 5px;
 			width: auto;
 			z-index: 100000; // Above WP toolbar.
+		}
+	}
+
+	.edit-post-header-toolbar__back.is-borderless {
+		border-right: 1px solid lighten( $gray, 25% );
+		border-radius: 0;
+		color: $blue-wordpress;
+		height: 100%;
+		min-width: 80px;
+		padding: 6px 16px;
+		&:hover {
+			color: $blue-medium;
+		}
+		@include breakpoint( '>960px' ) {
+			padding: 6px 32px;
+		}
+	}
+	.edit-post-header-toolbar .site {
+		border-right: 1px solid lighten( $gray, 25% );
+		margin-right: 10px;
+		.site__info {
+			width: auto;
+		}
+		.site__title::after {
+			width: 0;
+		}
+		&.is-compact .site__title {
+			line-height: 56px;
+		}
+		@include breakpoint( '<800px' ) {
+			display: none;
 		}
 	}
 
