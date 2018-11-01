@@ -27,11 +27,12 @@ import { DESIGN_TYPE_STORE } from 'signup/constants';
 import { planMatches } from 'lib/plans';
 import {
 	GROUP_WPCOM,
-	TYPE_BUSINESS,
+	TYPE_ECOMMERCE,
 	PLAN_FREE,
 	PLAN_PERSONAL,
 	PLAN_PREMIUM,
 	PLAN_BUSINESS,
+	PLAN_ECOMMERCE,
 } from 'lib/plans/constants';
 
 export class PlansAtomicStoreStep extends Component {
@@ -77,7 +78,7 @@ export class PlansAtomicStoreStep extends Component {
 			// activated at the end of the checkout process.
 			if (
 				designType === DESIGN_TYPE_STORE &&
-				planMatches( cartItem.product_slug, { type: TYPE_BUSINESS, group: GROUP_WPCOM } )
+				planMatches( cartItem.product_slug, { type: TYPE_ECOMMERCE, group: GROUP_WPCOM } )
 			) {
 				cartItem.extra = Object.assign( cartItem.extra || {}, {
 					is_store_signup: true,
@@ -124,12 +125,13 @@ export class PlansAtomicStoreStep extends Component {
 				isPersonalPlanEnabled ? PLAN_PERSONAL : null,
 				PLAN_PREMIUM,
 				PLAN_BUSINESS,
+				PLAN_ECOMMERCE,
 			],
 			value => !! value
 		);
 
 		if ( designType === DESIGN_TYPE_STORE ) {
-			plans = [ PLAN_BUSINESS ];
+			plans = [ PLAN_ECOMMERCE ];
 		}
 
 		return (
@@ -162,7 +164,7 @@ export class PlansAtomicStoreStep extends Component {
 		let headerText = translate( "Pick a plan that's right for you." );
 
 		if ( designType === DESIGN_TYPE_STORE ) {
-			headerText = translate( "You'll need the Business plan." );
+			headerText = translate( "You'll need the eCommerce plan." );
 		}
 
 		return (
