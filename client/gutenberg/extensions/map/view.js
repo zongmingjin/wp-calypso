@@ -16,6 +16,20 @@ window.addEventListener( 'load', function() {
 		return;
 	}
 	const frontendManagement = new FrontendManagement();
+
+	/* !!!!! Temporary, to simulate API call without requiring Map block Jetpack branch */
+	frontendManagement.blockIterator( document, [
+		{
+			component: component,
+			options: {
+				settings,
+				props: { api_key: 'AIzaSyCOTuVJwfnD7SwHcXpN3ro-pqtI16YCTrc' },
+			},
+		},
+	] );
+	return;
+	/* !!!!!! End temporary fix */
+
 	const url = '/wp-json/jetpack/v4/service-api-keys/googlemaps';
 	apiFetch( { url, method: 'GET' } ).then( result => {
 		frontendManagement.blockIterator( document, [

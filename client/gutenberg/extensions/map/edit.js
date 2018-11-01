@@ -80,6 +80,15 @@ class MapEdit extends Component {
 		this.apiCall( null, 'DELETE' );
 	};
 	apiCall( service_api_key = null, method = 'GET' ) {
+		/* !!!!!! Temporary, to simulate API call without requiring Map block Jetpack branch */
+		this.setState( {
+			apiState: API_STATE_SUCCESS,
+			api_key: 'AIzaSyCOTuVJwfnD7SwHcXpN3ro-pqtI16YCTrc',
+			apiKeyControl: 'AIzaSyCOTuVJwfnD7SwHcXpN3ro-pqtI16YCTrc',
+		} );
+		return;
+		/* !!!!!! End temporary fix */
+
 		const { noticeOperations } = this.props;
 		const url = '/wp-json/jetpack/v4/service-api-keys/googlemaps';
 		const fetch = service_api_key ? { url, method, data: { service_api_key } } : { url, method };
