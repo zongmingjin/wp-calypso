@@ -19,6 +19,11 @@ import { isJetpackSite } from 'state/sites/selectors';
 import isVipSite from 'state/selectors/is-vip-site';
 import { getSelectedSiteId } from 'state/ui/selectors/';
 
+/**
+ * Style dependencies
+ */
+import './style.scss';
+
 class EditorGutenbergOptInSidebar extends PureComponent {
 	static propTypes = {
 		translate: PropTypes.func,

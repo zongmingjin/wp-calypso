@@ -23,6 +23,11 @@ import { isEnabled } from 'config';
 import { isJetpackSite } from 'state/sites/selectors';
 import isVipSite from 'state/selectors/is-vip-site';
 
+/**
+ * Style dependencies
+ */
+import "./style.scss";
+
 class EditorGutenbergBlocksWarningDialog extends Component {
 	static propTypes = {
 		translate: PropTypes.func,
