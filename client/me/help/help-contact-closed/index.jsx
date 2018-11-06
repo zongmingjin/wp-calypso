@@ -17,6 +17,7 @@ import FormSectionHeading from 'components/forms/form-section-heading';
 import { isBusinessPlan, isPremiumPlan, isPersonalPlan } from 'lib/plans';
 import { getCurrentUserId } from 'state/current-user/selectors';
 import { getUserPurchases } from 'state/purchases/selectors';
+import { localizeUrl } from 'lib/i18n-utils';
 
 const gm2018ClosureStartsAt = i18n.moment( 'Sat, 29 Sep 2018 00:00:00 +0000' );
 
@@ -136,13 +137,19 @@ const GeneralMessage = ( { compact, translate } ) => {
 				'{{p}}Why? Once a year, the WordPress.com Happiness Engineers and the rest of the WordPress.com family ' +
 					'get together to work on improving our services, building new features, and learning how to better serve you, ' +
 					'our users. But never fear! If you need help in the meantime:{{/p}}' +
-					'{{p}}{{supportLink}}https://en.support.wordpress.com{{/supportLink}}{{/p}}' +
+					'{{p}}{{supportLink/}}{{/p}}' +
 					'{{p}}Our staff will be keeping an eye on the {{forumLink}}Forums{{/forumLink}} for urgent matters.{{/p}}',
 				{
 					components: {
 						p: <p />,
-						supportLink: <a href="https://en.support.wordpress.com" />,
-						forumLink: <a href="https://en.forums.wordpress.com/forum/support/" />,
+						supportLink: (
+							<a href={ localizeUrl( 'https://en.support.wordpress.com/' ) }>
+								{ localizeUrl( 'https://en.support.wordpress.com/' ) }
+							</a>
+						),
+						forumLink: (
+							<a href={ localizeUrl( 'https://en.forums.wordpress.com/forum/support/' ) } />
+						),
 					},
 				}
 			)
