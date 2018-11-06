@@ -6,6 +6,7 @@
 
 import validator from 'is-my-json-valid';
 import {
+	findKey,
 	forEach,
 	get,
 	includes,
@@ -16,6 +17,7 @@ import {
 	omit,
 	omitBy,
 	reduce,
+	reduceRight,
 } from 'lodash';
 import { combineReducers as combine } from 'redux'; // eslint-disable-line wpcalypso/import-no-redux-combine-reducers
 import LRU from 'lru';
@@ -23,7 +25,7 @@ import LRU from 'lru';
 /**
  * Internal dependencies
  */
-import { DESERIALIZE, SERIALIZE } from 'state/action-types';
+import { APPLY_STORED_STATE, DESERIALIZE, SERIALIZE } from 'state/action-types';
 import warn from 'lib/warn';
 
 export function isValidStateWithSchema( state, schema, debugInfo ) {
@@ -329,6 +331,11 @@ export const withSchemaValidation = ( schema, reducer ) => {
 	return wrappedReducer;
 };
 
+export const withStorageKey = ( storageKey, reducer ) => {
+	reducer.storageKey = storageKey;
+	return reducer;
+};
+
 /**
  * Wraps a reducer such that it won't persist any state to the browser's local storage
  *
@@ -425,6 +432,47 @@ function setupReducerPersistence( reducer ) {
 	return withoutPersistence( reducer );
 }
 
+export class SerializationResult {
+	constructor( results = {} ) {
+		this.results = results;
+	}
+
+	get() {
+		return this.results;
+	}
+
+	root() {
+		return this.results.root;
+	}
+
+	addRootResult( reducerKey, result ) {
+		return this.addResult( 'root', reducerKey, result );
+	}
+
+	addKeyResult( storageKey, result ) {
+		return this.addResult( storageKey, null, result );
+	}
+
+	addResult( storageKey, reducerKey, result ) {
+		if ( result instanceof SerializationResult ) {
+			forEach( result.results, ( resultState, resultKey ) => {
+				if ( resultKey === 'root' ) {
+					this.addResult( storageKey, reducerKey, resultState );
+				} else {
+					this.addResult( resultKey, null, resultState );
+				}
+			} );
+		} else if ( reducerKey ) {
+			if ( ! this.results[ storageKey ] ) {
+				this.results[ storageKey ] = {};
+			}
+			this.results[ storageKey ][ reducerKey ] = result;
+		} else {
+			this.results[ storageKey ] = result;
+		}
+	}
+}
+
 // SERIALIZE needs behavior that's slightly different from `combineReducers` from Redux:
 // - `undefined` is a valid value returned from SERIALIZE reducer, but `combineReducers`
 //   would throw an exception when seeing it.
@@ -446,14 +494,98 @@ function serializeState( reducers, state, action ) {
 			if ( serialized !== undefined ) {
 				if ( ! result ) {
 					// instantiate the result object only when it's going to have at least one property
-					result = {};
+					result = new SerializationResult();
 				}
-				result[ key ] = serialized;
+				if ( reducer.storageKey ) {
+					result.addKeyResult( reducer.storageKey, serialized );
+				} else {
+					result.addRootResult( key, serialized );
+				}
 			}
 			return result;
 		},
 		undefined
 	);
+}
+
+function applyStoredState( reducers, state, action ) {
+	// Find if any of the reducers matches the desired storageKey
+	const reducerKey = findKey( reducers, { storageKey: action.storageKey } );
+
+	if ( ! reducerKey ) {
+		return state;
+	}
+
+	// Replace the value for the key we want to init with action.state. Leave other keys intact.
+	return mapValues( state, ( value, key ) => ( key === reducerKey ? action.storedState : value ) );
+}
+
+/*
+ * Create a new reducer from original `reducers` by adding a new `reducer` at `keyPath`
+ */
+export function addReducer( origReducer, reducers ) {
+	return ( keyPath, reducer ) => {
+		// extract the first key from keyPath and dive recursively into the reducer tree
+		const [ key, ...restKeys ] = keyPath;
+
+		const existingReducer = reducers[ key ];
+		let newReducer;
+
+		// if there is an existing reducer at this path, we'll recursively call `addReducer`
+		// until we reach the final destination in the tree.
+		if ( existingReducer ) {
+			// we reached the final destination in the tree and another reducer already lives there!
+			if ( restKeys.length === 0 ) {
+				throw new Error( `Reducer with key '${ key }' is already registered` );
+			}
+
+			if ( ! existingReducer.addReducer ) {
+				throw new Error(
+					"New reducer can be added only into a reducer created with 'combineReducers'"
+				);
+			}
+
+			newReducer = existingReducer.addReducer( restKeys, reducer );
+		} else {
+			// for the remaining keys in the keyPath, create a nested reducer:
+			// if `restKeys` is `[ 'a', 'b', 'c']`, then the result of this `reduceRight` is:
+			// ```js
+			// combineReducers( {
+			//   a: combineReducers ( {
+			//     b: combineReducers( {
+			//       c: reducer
+			//     } )
+			//   })
+			// })
+			// ```
+			newReducer = reduceRight(
+				restKeys,
+				( subreducer, subkey ) => createCombinedReducer( { [ subkey ]: subreducer } ),
+				setupReducerPersistence( reducer )
+			);
+		}
+
+		const newCombinedReducer = createCombinedReducer( { ...reducers, [ key ]: newReducer } );
+
+		// Preserve the storageKey of the updated reducer
+		newCombinedReducer.storageKey = origReducer.storageKey;
+
+		return newCombinedReducer;
+	};
+}
+
+function getStorageKeys( reducers ) {
+	return function*() {
+		for ( const reducer of Object.values( reducers ) ) {
+			if ( reducer.storageKey ) {
+				yield { storageKey: reducer.storageKey, reducer };
+			}
+
+			if ( reducer.getStorageKeys ) {
+				yield* reducer.getStorageKeys();
+			}
+		}
+	};
 }
 
 /**
@@ -535,12 +667,18 @@ function createCombinedReducer( reducers ) {
 		switch ( action.type ) {
 			case SERIALIZE:
 				return serializeState( reducers, state, action );
+
+			case APPLY_STORED_STATE:
+				return applyStoredState( reducers, state, action );
+
 			default:
 				return combined( state, action );
 		}
 	};
 
 	combinedReducer.hasCustomPersistence = true;
+	combinedReducer.addReducer = addReducer( combinedReducer, reducers );
+	combinedReducer.getStorageKeys = getStorageKeys( reducers );
 
 	return combinedReducer;
 }

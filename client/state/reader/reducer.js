@@ -2,7 +2,7 @@
 /**
  * Internal dependencies
  */
-import { combineReducers } from 'state/utils';
+import { combineReducers, withStorageKey } from 'state/utils';
 
 import conversations from './conversations/reducer';
 import feeds from './feeds/reducer';
@@ -20,20 +20,23 @@ import tags from './tags/reducer';
 import teams from './teams/reducer';
 import thumbnails from './thumbnails/reducer';
 
-export default combineReducers( {
-	conversations,
-	feeds,
-	feedSearches,
-	follows,
-	lists,
-	posts,
-	recommendedSites,
-	relatedPosts,
-	siteBlocks,
-	siteDismissals,
-	sites,
-	streams,
-	tags,
-	teams,
-	thumbnails,
-} );
+export default withStorageKey(
+	'reader',
+	combineReducers( {
+		conversations,
+		feeds,
+		feedSearches,
+		follows,
+		lists,
+		posts,
+		recommendedSites,
+		relatedPosts,
+		siteBlocks,
+		siteDismissals,
+		sites,
+		streams,
+		tags,
+		teams,
+		thumbnails,
+	} )
+);

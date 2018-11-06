@@ -19,6 +19,8 @@ import {
 	isValidStateWithSchema,
 	withoutPersistence,
 	withEnhancers,
+	withStorageKey,
+	SerializationResult,
 } from 'state/utils';
 import warn from 'lib/warn';
 
@@ -586,7 +588,7 @@ describe( 'utils', () => {
 
 		test( 'should not persist height, because it is missing a schema', () => {
 			const state = reducers( appState, write );
-			expect( state ).toEqual( { age: 20 } );
+			expect( state.root() ).toEqual( { age: 20 } );
 		} );
 
 		test( 'should not load height, because it is missing a schema', () => {
@@ -614,7 +616,7 @@ describe( 'utils', () => {
 			} );
 
 			const missingPerson = nested( { date: new Date( 100 ) }, write );
-			expect( missingPerson ).toEqual( { date: 100 } );
+			expect( missingPerson.root() ).toEqual( { date: 100 } );
 		} );
 
 		test( 'nested reducers work on load', () => {
@@ -651,10 +653,10 @@ describe( 'utils', () => {
 				count,
 			} );
 			const valid = nested( { person: { age: 22, date: new Date( 224 ) } }, write );
-			expect( valid ).toEqual( { person: { age: 22, date: 224 } } );
+			expect( valid.root() ).toEqual( { person: { age: 22, date: 224 } } );
 
 			const invalid = nested( { person: { age: -5, height: 100, date: new Date( -500 ) } }, write );
-			expect( invalid ).toEqual( { person: { age: -5, date: -500 } } );
+			expect( invalid.root() ).toEqual( { person: { age: -5, date: -500 } } );
 		} );
 
 		test( 'nested reducers leave out a state slice where none of the children is persisted', () => {
@@ -677,7 +679,7 @@ describe( 'utils', () => {
 				},
 				write
 			);
-			expect( stored ).toEqual( { age: 40 } );
+			expect( stored.root() ).toEqual( { age: 40 } );
 		} );
 
 		test( 'deeply nested reducers work on load', () => {
@@ -726,13 +728,13 @@ describe( 'utils', () => {
 				{ bob: { person: { age: 22, date: new Date( 234 ) } }, count: 122 },
 				write
 			);
-			expect( valid ).toEqual( { bob: { person: { age: 22, date: 234 } } } );
+			expect( valid.root() ).toEqual( { bob: { person: { age: 22, date: 234 } } } );
 
 			const invalid = veryNested(
 				{ bob: { person: { age: -5, height: 22, date: new Date( -5 ) } }, count: 123 },
 				write
 			);
-			expect( invalid ).toEqual( { bob: { person: { age: -5, date: -5 } } } );
+			expect( invalid.root() ).toEqual( { bob: { person: { age: -5, date: -5 } } } );
 		} );
 
 		test( 'deeply nested reducers work with reducer with a custom handler', () => {
@@ -748,13 +750,13 @@ describe( 'utils', () => {
 				count,
 			} );
 			const valid = veryNested( { bob: { person: { date: new Date( 234 ) } }, count: 122 }, write );
-			expect( valid ).toEqual( { bob: { person: { date: 234 } } } );
+			expect( valid.root() ).toEqual( { bob: { person: { date: 234 } } } );
 
 			const invalid = veryNested(
 				{ bob: { person: { height: 22, date: new Date( -5 ) } }, count: 123 },
 				write
 			);
-			expect( invalid ).toEqual( { bob: { person: { date: -5 } } } );
+			expect( invalid.root() ).toEqual( { bob: { person: { date: -5 } } } );
 		} );
 
 		test( 'uses the provided validation from withSchemaValidation', () => {
@@ -764,7 +766,7 @@ describe( 'utils', () => {
 			} );
 
 			const valid = reducers( { height: 22, count: 44 }, write );
-			expect( valid ).toEqual( { height: 22 } );
+			expect( valid.root() ).toEqual( { height: 22 } );
 
 			const invalid = reducers( { height: -1, count: 44 }, load );
 			expect( invalid ).toEqual( { height: 160, count: 1 } );
@@ -777,7 +779,7 @@ describe( 'utils', () => {
 			} );
 
 			const valid = reducers( { height: 22, count: 44 }, write );
-			expect( valid ).toEqual( { height: 22 } );
+			expect( valid.root() ).toEqual( { height: 22 } );
 
 			const invalid = reducers( { height: -1, count: 44 }, load );
 			expect( invalid ).toEqual( { height: 160, count: 1 } );
@@ -977,6 +979,184 @@ describe( 'utils', () => {
 				name: 'test',
 				hello: 'world',
 				type: 'HELLO',
+			} );
+		} );
+	} );
+} );
+
+describe( 'SerializationResult', () => {
+	test( 'simple root result', () => {
+		const result = new SerializationResult();
+		expect( result.get() ).toEqual( {} );
+		result.addRootResult( 'key1', 'data1' );
+		expect( result.get() ).toEqual( { root: { key1: 'data1' } } );
+		result.addRootResult( 'key2', 'data2' );
+		expect( result.get() ).toEqual( { root: { key1: 'data1', key2: 'data2' } } );
+	} );
+
+	test( 'complex root result', () => {
+		const result = new SerializationResult( {
+			root: { key1: 'data1' },
+		} );
+
+		result.addRootResult(
+			'key2',
+			new SerializationResult( {
+				root: 'data2',
+				posts: { '1': 'hello' },
+			} )
+		);
+
+		expect( result.get() ).toEqual( {
+			root: { key1: 'data1', key2: 'data2' },
+			posts: { '1': 'hello' },
+		} );
+	} );
+
+	test( 'complex nested root result', () => {
+		const result = new SerializationResult( {
+			root: { key1: 'data1' },
+		} );
+
+		result.addRootResult(
+			'key2',
+			new SerializationResult( {
+				root: new SerializationResult( {
+					root: 'data2',
+					pages: { '1': 'about' },
+				} ),
+				posts: { '1': 'hello' },
+			} )
+		);
+
+		expect( result.get() ).toEqual( {
+			root: { key1: 'data1', key2: 'data2' },
+			posts: { '1': 'hello' },
+			pages: { '1': 'about' },
+		} );
+	} );
+
+	test( 'simple key result', () => {
+		const result = new SerializationResult( {
+			root: { key1: 'data1' },
+		} );
+
+		result.addKeyResult( 'posts', { '1': 'hello' } );
+
+		expect( result.get() ).toEqual( {
+			root: { key1: 'data1' },
+			posts: { '1': 'hello' },
+		} );
+	} );
+
+	test( 'key result is overwritten', () => {
+		const result = new SerializationResult( {
+			posts: { '1': 'hello' },
+		} );
+
+		result.addKeyResult( 'posts', { '2': 'world' } );
+
+		expect( result.get() ).toEqual( {
+			posts: { '2': 'world' },
+		} );
+	} );
+
+	test( 'complex nested key result', () => {
+		const result = new SerializationResult( {
+			root: { key1: 'data1' },
+		} );
+
+		result.addKeyResult(
+			'posts',
+			new SerializationResult( {
+				root: new SerializationResult( {
+					root: { '1': 'hello' },
+					comments: { '1': 'comment' },
+				} ),
+				pages: { '1': 'about' },
+			} )
+		);
+
+		expect( result.get() ).toEqual( {
+			root: { key1: 'data1' },
+			posts: { '1': 'hello' },
+			pages: { '1': 'about' },
+			comments: { '1': 'comment' },
+		} );
+	} );
+} );
+
+describe( 'addReducer', () => {
+	// creator of toy reducers that initialize to `initialValue` and don't react to other actions
+	const toyReducer = initialValue => ( state = initialValue ) => state;
+
+	describe( 'basic tests', () => {
+		test( 'can add a new top-level reducer', () => {
+			const origReducer = combineReducers( {
+				a: toyReducer( 'Hello from A' ),
+			} );
+
+			const newReducer = origReducer.addReducer( [ 'b' ], toyReducer( 'Hello from B' ) );
+
+			expect( newReducer( undefined, { type: 'INIT' } ) ).toEqual( {
+				a: 'Hello from A',
+				b: 'Hello from B',
+			} );
+		} );
+
+		test( 'can add a new nested reducer', () => {
+			const origReducer = combineReducers( {
+				a: combineReducers( {
+					a: toyReducer( 'Hello from A.A' ),
+				} ),
+			} );
+
+			const newReducer = origReducer
+				.addReducer( [ 'a', 'b' ], toyReducer( 'Hello from A.B' ) )
+				.addReducer( [ 'a', 'c', 'd' ], toyReducer( 'Hello from A.C.D' ) );
+
+			expect( newReducer( undefined, { type: 'INIT' } ) ).toEqual( {
+				a: {
+					a: 'Hello from A.A',
+					b: 'Hello from A.B',
+					c: {
+						d: 'Hello from A.C.D',
+					},
+				},
+			} );
+		} );
+	} );
+
+	describe( 'interaction with persistence', () => {
+		const persistedToyReducer = initialState =>
+			withSchemaValidation( { type: 'string' }, toyReducer( initialState ) );
+
+		test( 'storageKey survives adding a new reducer', () => {
+			const origReducer = withStorageKey(
+				'foo',
+				combineReducers( {
+					a: withStorageKey(
+						'keyA',
+						combineReducers( {
+							b: persistedToyReducer( 'Hello from keyA.b' ),
+						} )
+					),
+				} )
+			);
+
+			const newReducer = origReducer.addReducer(
+				[ 'a', 'c' ],
+				persistedToyReducer( 'Hello from keyA.c' )
+			);
+
+			const state = newReducer( undefined, { type: 'INIT' } );
+			const serializedState = newReducer( state, { type: 'SERIALIZE' } );
+
+			expect( serializedState.get() ).toEqual( {
+				keyA: {
+					b: 'Hello from keyA.b',
+					c: 'Hello from keyA.c',
+				},
 			} );
 		} );
 	} );
