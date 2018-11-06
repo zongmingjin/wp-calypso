@@ -1,13 +1,19 @@
 /** @format */
+
 /**
  * External dependencies
  */
 import React from 'react';
+import debug from 'debug';
+import request from 'superagent';
+import { isEnabled } from 'config';
 import { has, uniqueId } from 'lodash';
+import { setLocaleData } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import getCurrentLocaleSlug from 'state/selectors/get-current-locale-slug';
 import { getCurrentUserId } from 'state/current-user/selectors';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
 import { EDITOR_START } from 'state/action-types';
@@ -33,6 +39,30 @@ function getPostID( context ) {
 	// both post and site are in the path
 	return parseInt( context.params.post, 10 );
 }
+
+export const jetpackBlocki18n = ( context, next ) => {
+	if ( ! isEnabled( 'gutenberg/block/jetpack-preset' ) ) {
+		return next();
+	}
+
+	const state = context.store.getState();
+	const localeSlug = getCurrentLocaleSlug( state );
+	const languageFileUrl =
+		'https://widgets.wp.com/languages/jetpack-gutenberg-blocks/' + localeSlug + '.json';
+
+	request.get( languageFileUrl ).end( ( error, response ) => {
+		if ( error ) {
+			debug(
+				'Encountered an error loading locale file for ' + localeSlug + '. Falling back to English.'
+			);
+			return next();
+		}
+
+		setLocaleData( response.body, 'jetpack' );
+
+		next();
+	} );
+};
 
 export const post = ( context, next ) => {
 	//see post-editor/controller.js for reference
