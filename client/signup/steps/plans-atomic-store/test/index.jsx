@@ -45,8 +45,8 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import {
 	PLAN_FREE,
-	PLAN_BUSINESS,
-	PLAN_BUSINESS_2_YEARS,
+	PLAN_ECOMMERCE,
+	PLAN_ECOMMERCE_2_YEARS,
 	PLAN_PREMIUM,
 	PLAN_PREMIUM_2_YEARS,
 	PLAN_PERSONAL,
@@ -197,8 +197,8 @@ describe( 'PlansAtomicStoreStep.onSelectPlan', () => {
 		} );
 	} );
 
-	[ PLAN_BUSINESS, PLAN_BUSINESS_2_YEARS ].forEach( plan => {
-		test( `Should add is_store_signup to cartItem.extra when processing wp.com business plans (${ plan })`, () => {
+	[ PLAN_ECOMMERCE, PLAN_ECOMMERCE_2_YEARS ].forEach( plan => {
+		test( `Should add is_store_signup to cartItem.extra when processing wp.com eCommerce plans (${ plan })`, () => {
 			const myProps = {
 				...tplProps,
 				goToNextStep: jest.fn(),
