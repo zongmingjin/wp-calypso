@@ -11,10 +11,7 @@ import { __ } from 'gutenberg/extensions/presets/jetpack/utils/i18n';
 import './product-placeholder.scss';
 
 export default ( { title = '', content = '', formattedPrice = '', multiple = false } ) => {
-	const assetUrl =
-		typeof window !== undefined && window.Jetpack_Block_Assets_Base_Url
-			? window.Jetpack_Block_Assets_Base_Url
-			: '/wp-content/plugins/jetpack/_inc/blocks';
+	const assetUrl = 'https://i0.wp.com/simison-atomic-site-1.blog/wp-content/uploads/2018/11/';
 
 	return (
 		<div className="jetpack-simple-payments-wrapper">
