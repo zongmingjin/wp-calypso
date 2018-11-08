@@ -22,6 +22,11 @@ import getSignupStepsSiteTopic from 'state/selectors/get-signup-steps-site-topic
 import SignupActions from 'lib/signup/actions';
 import { hints } from 'lib/signup/hint-data';
 
+/**
+ * Style dependencies
+ */
+import './style.scss';
+
 class SiteTopicStep extends Component {
 	static propTypes = {
 		flowName: PropTypes.string,

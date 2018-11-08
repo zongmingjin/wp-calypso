@@ -26,6 +26,11 @@ import PlansFeaturesMain from 'my-sites/plans-features-main';
 import PlansSkipButton from 'components/plans/plans-skip-button';
 import QueryPlans from 'components/data/query-plans';
 
+/**
+ * Style dependencies
+ */
+import './style.scss';
+
 class PlansStep extends Component {
 	componentDidMount() {
 		SignupActions.saveSignupStep( {
