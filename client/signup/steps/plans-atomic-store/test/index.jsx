@@ -45,6 +45,8 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import {
 	PLAN_FREE,
+	PLAN_ECOMMERCE,
+	PLAN_ECOMMERCE_2_YEARS,
 	PLAN_BUSINESS,
 	PLAN_BUSINESS_2_YEARS,
 	PLAN_PREMIUM,
@@ -197,21 +199,23 @@ describe( 'PlansAtomicStoreStep.onSelectPlan', () => {
 		} );
 	} );
 
-	[ PLAN_BUSINESS, PLAN_BUSINESS_2_YEARS ].forEach( plan => {
-		test( `Should add is_store_signup to cartItem.extra when processing wp.com business plans (${ plan })`, () => {
-			const myProps = {
-				...tplProps,
-				goToNextStep: jest.fn(),
-			};
-			const cartItem = { product_slug: plan };
-			const comp = new PlansAtomicStoreStep( myProps );
-			comp.onSelectPlan( cartItem );
-			expect( myProps.goToNextStep ).toBeCalled();
-			expect( cartItem.extra ).toEqual( {
-				is_store_signup: true,
+	[ PLAN_BUSINESS, PLAN_BUSINESS_2_YEARS, PLAN_ECOMMERCE, PLAN_ECOMMERCE_2_YEARS ].forEach(
+		plan => {
+			test( `Should add is_store_signup to cartItem.extra when processing wp.com business plans (${ plan })`, () => {
+				const myProps = {
+					...tplProps,
+					goToNextStep: jest.fn(),
+				};
+				const cartItem = { product_slug: plan };
+				const comp = new PlansAtomicStoreStep( myProps );
+				comp.onSelectPlan( cartItem );
+				expect( myProps.goToNextStep ).toBeCalled();
+				expect( cartItem.extra ).toEqual( {
+					is_store_signup: true,
+				} );
 			} );
-		} );
-	} );
+		}
+	);
 
 	test( 'Should not add is_store_signup to cartItem.extra when processing wp.com business plans and designType is not "store"', () => {
 		const myProps = {
