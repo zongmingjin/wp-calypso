@@ -81,7 +81,6 @@ describe( 'PendingPayments', () => {
 				productName: 'WordPress.com Business Plan',
 				paymentType: 'Soforte',
 				totalCostDisplay: '$204',
-				completePaymentUrl: 'https://complete',
 			},
 		];
 		const wrapper = shallow(

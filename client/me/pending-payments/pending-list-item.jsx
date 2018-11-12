@@ -16,17 +16,20 @@ import Button from 'components/button';
 import { errorNotice, infoNotice } from 'state/notices/actions';
 
 export class PendingListItem extends Component {
-	onAbandon = () => {};
+	onCompletePayment = () => {
+		const { showInfoNotice, translate } = this.props;
+
+		showInfoNotice( translate( 'Payment complete.' ) );
+	};
+
+	onAbandonPayment = () => {
+		const { showInfoNotice, translate } = this.props;
+
+		showInfoNotice( translate( 'Payment abandoned.' ) );
+	};
 
 	render = () => {
-		const {
-			productName,
-			paymentType,
-			totalCostDisplay,
-			completePaymentUrl,
-			translate,
-			onAbandonPayment,
-		} = this.props;
+		const { productName, paymentType, totalCostDisplay, translate } = this.props;
 
 		return (
 			<Card className={ 'pending-payments__list-item' }>
@@ -40,10 +43,10 @@ export class PendingListItem extends Component {
 								<Gridicon icon="help" />
 								<span>{ translate( 'Contact Support' ) }</span>
 							</Button>
-							<Button isPrimary={ false } onClick={ onAbandonPayment }>
+							<Button isPrimary={ false } onClick={ this.onAbandonPayment }>
 								{ translate( 'Abandon Payment' ) }
 							</Button>
-							<Button isPrimary={ true } href={ completePaymentUrl }>
+							<Button isPrimary={ true } onClick={ this.onCompletePayment }>
 								{ translate( 'Complete Payment' ) }
 							</Button>
 						</div>
@@ -58,17 +61,11 @@ PendingListItem.propTypes = {
 	productName: PropTypes.string.isRequired,
 	paymentType: PropTypes.string.isRequired,
 	totalCostDisplay: PropTypes.string.isRequired,
-	completePaymentUrl: PropTypes.string.isRequired,
 };
 
 export default connect(
 	() => ( {} ),
-	( dispatch, props ) => ( {
-		onAbandonPayment: () => {
-			// todo:
-			// dispatch( abandonPayment( props.paymentId ) );
-			console.log( 'Payment abandoned' );
-		},
+	dispatch => ( {
 		showInfoNotice: ( info, options ) =>
 			dispatch( infoNotice( info, Object.assign( {}, options, { id: 'pending-payments-item' } ) ) ),
 		showErrorNotice: ( error, options ) =>
