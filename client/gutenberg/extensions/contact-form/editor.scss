@@ -10,8 +10,14 @@
 .jetpack-contact-form .components-placeholder{
 	padding: 24px;
 
+	.help-message,
 	.components-placeholder__fieldset {
 		text-align: left;
+	}
+
+	.help-message {
+		width: 100%;
+		margin: -18px 0 28px;
 	}
 
 	.components-base-control {
