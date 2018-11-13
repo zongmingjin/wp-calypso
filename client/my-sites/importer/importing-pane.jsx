@@ -126,13 +126,14 @@ class ImportingPane extends React.PureComponent {
 
 	getSuccessText = () => {
 		const {
-				site: { slug },
-				progress: { page, post },
-			} = this.props.importerStatus,
-			pageLink = <a href={ '/pages/' + slug } />,
-			pageText = translate( 'Pages', { context: 'noun' } ),
-			postLink = <a href={ '/posts/' + slug } />,
-			postText = translate( 'Posts', { context: 'noun' } );
+			site: { slug },
+			progress: { page, post },
+		} = this.props.importerStatus;
+		const pageLink = <a href={ '/pages/' + slug } />;
+		const pageText = translate( 'Pages', { context: 'noun' } );
+		const postLink = <a href={ '/posts/' + slug } />;
+		const postText = translate( 'Posts', { context: 'noun' } );
+		const checklistLink = <a href={ '/checklist/' + slug } />;
 
 		const pageCount = page.total;
 		const postCount = post.total;
@@ -140,11 +141,14 @@ class ImportingPane extends React.PureComponent {
 		if ( pageCount && postCount ) {
 			return this.props.translate(
 				'All done! Check out {{a}}Posts{{/a}} and ' +
-					'{{b}}Pages{{/b}} to see your imported content.',
+					'{{b}}Pages{{/b}} to see your imported content,{{br/}}' +
+					' or explore ways to {{c}}improve your site{{/c}}.',
 				{
 					components: {
 						a: postLink,
 						b: pageLink,
+						c: checklistLink,
+						br: <br />,
 					},
 				}
 			);
@@ -152,9 +156,15 @@ class ImportingPane extends React.PureComponent {
 
 		if ( pageCount || postCount ) {
 			return this.props.translate(
-				'All done! Check out {{a}}%(articles)s{{/a}} ' + 'to see your imported content.',
+				'All done! Check out {{a}}%(articles)s{{/a}} ' +
+					'to see your imported content,{{br/}}' +
+					' or explore ways to {{b}}improve your site{{/b}}.',
 				{
-					components: { a: pageCount ? pageLink : postLink },
+					components: {
+						a: pageCount ? pageLink : postLink,
+						b: checklistLink,
+						br: <br />,
+					},
 					args: { articles: pageCount ? pageText : postText },
 				}
 			);
@@ -234,7 +244,8 @@ class ImportingPane extends React.PureComponent {
 			'is-complete': this.isFinished(),
 		} );
 
-		let { percentComplete, progress, statusMessage } = this.props.importerStatus;
+		let { percentComplete, statusMessage } = this.props.importerStatus;
+		const { progress } = this.props.importerStatus;
 		let blockingMessage;
 
 		if ( this.isError() ) {
