@@ -39,14 +39,16 @@ export class PendingListItem extends Component {
 						<div className="pending-payments__list-item-purchase-type">{ paymentType }</div>
 						<div className="pending-payments__list-item-purchase-date">{ totalCostDisplay }</div>
 						<div className="pending-payments__list-item-actions">
-							<Button isPrimary={ false } href="/help/contact">
+							<Button primary={ false } href="/help/contact">
 								<Gridicon icon="help" />
 								<span>{ translate( 'Contact Support' ) }</span>
 							</Button>
-							<Button isPrimary={ false } onClick={ this.onAbandonPayment }>
+							<Button primary={ false } onClick={ this.onAbandonPayment }>
+								<Gridicon icon="trash" />
 								{ translate( 'Abandon Payment' ) }
 							</Button>
-							<Button isPrimary={ true } onClick={ this.onCompletePayment }>
+
+							<Button primary={ true } onClick={ this.onCompletePayment }>
 								{ translate( 'Complete Payment' ) }
 							</Button>
 						</div>
