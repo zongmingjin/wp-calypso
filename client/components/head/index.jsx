@@ -26,6 +26,15 @@ const Head = ( { title = 'WordPress.com', faviconURL, children, cdn, branchName 
 			<meta name="referrer" content="origin" />
 
 			<link
+				rel="prefetch"
+				as="document"
+				href="https://public-api.wordpress.com/wp-admin/rest-proxy/?v=2.0"
+			/>
+			<link rel="preconnect" href="https://s1.wp.com" />
+			<link rel="preconnect" href="https://apis.google.com" />
+			<link rel="preconnect" href="https://stats.wp.com" />
+
+			<link
 				rel="shortcut icon"
 				type="image/vnd.microsoft.icon"
 				href={ faviconURL }
