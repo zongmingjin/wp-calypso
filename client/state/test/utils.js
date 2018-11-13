@@ -19,6 +19,7 @@ import {
 	isValidStateWithSchema,
 	withoutPersistence,
 	withEnhancers,
+	withStorageKey,
 } from 'state/utils';
 import warn from 'lib/warn';
 
@@ -978,6 +979,36 @@ describe( 'utils', () => {
 				hello: 'world',
 				type: 'HELLO',
 			} );
+		} );
+	} );
+} );
+
+describe( 'withStorageKey', () => {
+	test( 'reducer with storage key is serialized into separate object', () => {
+		// persisted reducer that will be a part of root state
+		const posts = withSchemaValidation( { type: 'string' }, ( state = 'postsState' ) => state );
+
+		// persisted reducer with its own persistence key
+		const reader = withStorageKey(
+			'readerKey',
+			withSchemaValidation( { type: 'string' }, ( state = 'readerState' ) => state )
+		);
+
+		// combine the two reducers into one
+		const reducer = combineReducers( {
+			posts,
+			reader,
+		} );
+
+		// initialize the state
+		const state = reducer( undefined, { type: 'INIT' } );
+
+		// and serialize
+		const result = reducer( state, { type: 'SERIALIZE' } );
+
+		expect( result.get() ).toEqual( {
+			root: { posts: 'postsState' },
+			readerKey: 'readerState',
 		} );
 	} );
 } );
